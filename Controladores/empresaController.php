@@ -19,10 +19,10 @@ switch($accion){
         $insert->bindParam(':val4',$direccion);
 
         if ($insert->execute()) {
-            header("Location: ../index.php?guardado=true");
+            header("Location: ../Vistas/empresaView.php?guardado=true");
             exit();
         } else {
-            header("Location: ../index.php?guardado=false");
+            header("Location: ../Vistas/empresaView.php?guardado=false");
             exit();
         }
         break; 
@@ -38,7 +38,8 @@ switch($accion){
                 emp_nombre = :val1,
                 emp_RUC = :val2,
                 emp_telefono = :val3,
-                emp_direccion = :val4
+                emp_direccion = :val4,
+                emp_fechaModificacion = NOW()
                 WHERE emp_id = :val5");
 
             $update->bindParam(':val1',$nombre_empresa);
@@ -48,14 +49,14 @@ switch($accion){
             $update->bindParam(':val5',$id_empresa);
 
             if ($update->execute()) {
-                header("Location: ../index.php?editado=true");
+                header("Location: ../Vistas/empresaView.php?editado=true");
                 exit();
             } else {
-                header("Location: ../index.php?editado=false");
+                header("Location: ../Vistas/empresaView.php?editado=false");
                 exit();
             }
         }else{
-            header("Location: ../index.php?editado=false");
+            header("Location: ../Vistas/empresaView.php?eliminado=false");
             exit();
         }
         break; 
@@ -64,25 +65,22 @@ switch($accion){
             $id_empresa = $_POST['txt_id'];
 
             $update=$pdo->prepare("UPDATE empresa SET 
-                emp_estado = 0
+                emp_estado = 0,
+                emp_fechaModificacion = NOW()
                 WHERE emp_id = :val1");
 
             $update->bindParam(':val1',$id_empresa);
 
             if ($update->execute()) {
-                header("Location: ../index.php?eliminado=true");
+                header("Location: ../Vistas/empresaView.php?eliminado=true");
                 exit();
             } else {
-                header("Location: ../index.php?eliminado=false");
+                header("Location: ../Vistas/empresaView.php?eliminado=false");
                 exit();
             }
         }else{
-            header("Location: ../index.php?eliminado=false");
+            header("Location: ../Vistas/empresaView.php?eliminado=false");
             exit();
         }
-        break; 
-    case "btnCancelar":
-        echo $nombre_empresa;
-        echo "Presionaste el can";
         break; 
 }

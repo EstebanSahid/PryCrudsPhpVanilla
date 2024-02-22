@@ -1,5 +1,5 @@
 <?php
-include './Conexion/conexion.php';
+include '../Conexion/conexion.php';
 
 $index = $pdo->prepare("SELECT * FROM empresa WHERE emp_estado = 1");
 $index -> execute();
@@ -70,14 +70,14 @@ if(isset($_GET['eliminado'])) {
             href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
 
         <!-- bootstrap core css -->
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
 
         <!-- fonts style -->
         <link href="https://fonts.googleapis.com/css?family=Poppins:400,700|Roboto:400,700&display=swap" rel="stylesheet">
         <!-- Custom styles for this template -->
-        <link href="css/style.css" rel="stylesheet" />
+        <link href="../css/style.css" rel="stylesheet" />
         <!-- responsive style -->
-        <link href="css/responsive.css" rel="stylesheet" />
+        <link href="../css/responsive.css" rel="stylesheet" />
 
         <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
@@ -95,7 +95,7 @@ if(isset($_GET['eliminado'])) {
             <header class="header_section">
                 <div class="container-fluid">
                     <nav class="navbar navbar-expand-lg custom_nav-container ">
-                    <a class="navbar-brand" href="index.php">
+                    <a class="navbar-brand" href="../index.php">
                         <span>
                         ACME Cia. Ltda.
                         </span>
@@ -108,23 +108,23 @@ if(isset($_GET['eliminado'])) {
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <div class="d-flex mx-auto flex-column flex-lg-row align-items-center">
                         <ul class="navbar-nav  ">
-                            <li class="nav-item active">
-                                <a class="nav-link" href="index.html">Empresas <span class="sr-only">(current)</span></a>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./empresaView.php">Empresas <span class="sr-only">(current)</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="about.html"> Docentes </a>
+                                <a class="nav-link" href="./docenteView.php"> Docentes </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="service.html"> Cursos </a>
+                                <a class="nav-link" href="./cursoView.php"> Cursos </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="contact.html">Alumnos</a>
+                                <a class="nav-link" href="./alumnoView.php">Alumnos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="contact.html">Planificacion</a>
+                                <a class="nav-link" href="./planifView.php">Planificacion</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="contact.html">Evaluación</a>
+                                <a class="nav-link" href="./evaluacionView.php">Evaluación</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Login</a>
@@ -183,7 +183,7 @@ if(isset($_GET['eliminado'])) {
                 <div class="col-4 d-flex justify-content-end service_container">
                     <div class="d-flex justify-content-center contact_section">
                         <button id="agregarEmpresaBtn">
-                            Agregar Empresa
+                            Agregar Alumno
                         </button>
                     </div>
                 </div>
@@ -239,8 +239,8 @@ if(isset($_GET['eliminado'])) {
         </section>
         <!-- footer section -->
 
-        <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-        <script type="text/javascript" src="js/bootstrap.js"></script>
+        <script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
+        <script type="text/javascript" src="../js/bootstrap.js"></script>
 
         <!-- Modales -->
 
@@ -253,7 +253,7 @@ if(isset($_GET['eliminado'])) {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="./Controladores/empresaController.php" method="post">
+                        <form action="../Controladores/empresaController.php" method="post">
                             <div class="row">
                                 <input type="hidden" name="txt_id">
                                 <div class="col-6">
@@ -311,7 +311,7 @@ if(isset($_GET['eliminado'])) {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="./Controladores/empresaController.php" method="post">
+                        <form action="../Controladores/empresaController.php" method="post">
                             <div class="row">
                                 <input type="hidden" name="txt_id" id="txt_id">
                                 <div class="col-6">
@@ -368,7 +368,7 @@ if(isset($_GET['eliminado'])) {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="./Controladores/empresaController.php" method="post">
+                        <form action="../Controladores/empresaController.php" method="post">
                             <input type="hidden" name="txt_id" id="txt_id">
                             <p>¿Está Seguro de Eliminar el Registro?</p>
                             <div class="row">
@@ -392,6 +392,7 @@ if(isset($_GET['eliminado'])) {
 
                 //Abrir el Modal para Agregar
                 $('#agregarEmpresaBtn').click(function(){
+                    console.log("click aqui")
                     $('#modalAdd').modal('show');
                 });
 

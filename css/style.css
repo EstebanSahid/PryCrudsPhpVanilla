@@ -221,6 +221,10 @@ a:focus {
   color: #007bff;
 }
 
+.slider_section .detail-box h2 span {
+  color: #007bff;
+}
+
 .slider_section .slider_nav-box {
   display: -webkit-box;
   display: -ms-flexbox;
