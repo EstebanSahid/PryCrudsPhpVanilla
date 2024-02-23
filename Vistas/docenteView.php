@@ -16,7 +16,6 @@ $tipoIdentificacion = $pdo->prepare("SELECT * FROM tipoidentificacion");
 $tipoIdentificacion -> execute();
 $listaTipoIdentificacion = $tipoIdentificacion->fetchAll(PDO::FETCH_ASSOC);
 
-
 if(isset($_GET['guardado'])) {
     if ($_GET['guardado'] == "true") {
         echo '  <script>
@@ -35,7 +34,7 @@ if(isset($_GET['guardado'])) {
                 </script>';
     }
 }
-/*
+
 if(isset($_GET['editado'])) {
     if ($_GET['editado'] == "true") {
         echo '  <script>
@@ -62,7 +61,7 @@ if(isset($_GET['eliminado'])) {
                     window.history.replaceState({}, document.title, window.location.pathname);
                 </script>';
     }
-}*/
+}
 //print_r($listaDocentes);
 ?>
 
@@ -106,95 +105,53 @@ if(isset($_GET['eliminado'])) {
     </head>
 
     <body>
+        <!-- Menu -->
         <div class="hero_area">
-            <!-- Menu -->
-            <header class="header_section">
-                <div class="container-fluid">
-                    <nav class="navbar navbar-expand-lg custom_nav-container ">
-                    <a class="navbar-brand" href="../index.php">
-                        <span>
-                        ACME Cia. Ltda.
-                        </span>
-                    </a>
-                    <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse"
-                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <div class="d-flex mx-auto flex-column flex-lg-row align-items-center">
-                        <ul class="navbar-nav  ">
-                            <li class="nav-item">
-                                <a class="nav-link" href="./empresaView.php">Empresas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./docenteView.php"> Docentes </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./cursoView.php"> Cursos </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./alumnoView.php">Alumnos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./planifView.php">Planificacion</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./evaluacionView.php">Evaluación</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Login</a>
-                            </li>
-                        </ul>
-                        </div>
-                    </div>
-                    <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
-                        <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-                    </form>
-                    </nav>
-                </div>
-            </header>
-            <!-- Menu -->
+            <?php include 'header.html'; ?>
         </div>
-
-        <!-- Tabla -->
+        
         <div class="container pt-4">
+            <!-- Boton -->
             <div class="row">
                 <div class="col-8"></div>
-                <div class="col-4 d-flex justify-content-end service_container">
-                    <div class="d-flex justify-content-center contact_section">
-                        <button id="agregarEmpresaBtn">
-                            Agregar Docente
-                        </button>
+                <div class="col-4">
+                    <div class="d-flex justify-content-end service_container">
+                        <div class="d-flex justify-content-center contact_section">
+                            <button id="agregarDocenteBtn">
+                                Agregar Docente
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-
+            <!-- Tabla -->
             <div class="row pt-4">
                 <table id="example" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="text-center">Docente</th>
-                            <th class="text-center">Tipo de Identificación</th>
-                            <th class="text-center">Identificacion</th>
-                            <th class="text-center">Correo</th>
-                            <th class="text-center">Direccion</th>
-                            <th class="text-center">Telefono</th>
-                            <th class="text-center">Acciones</th>
+                            <th class="text-center align-middle">Docente</th>
+                            <th class="text-center align-middle">Tipo de Identificación</th>
+                            <th class="text-center align-middle">Identificacion</th>
+                            <th class="text-center align-middle">Correo</th>
+                            <th class="text-center align-middle">Direccion</th>
+                            <th class="text-center align-middle">Telefono</th>
+                            <th class="text-center align-middle">Acciones</th>
                         </tr>
                     </thead>
-                    <?php foreach($listaDocentes as $Docente){ ?>
+                    <?php $idti_hidden = 0;
+                    foreach($listaDocentes as $Docente){ ?>
                         <tr>
-                            <td class="text-center"><?= $Docente['docente']; ?></td>
-                            <td class="text-center"><?= $Docente['ti_texto']; ?></td>
-                            <td class="text-center"><?= isset($Docente['doc_numIdentificacion']) ? $Docente['doc_numIdentificacion'] : "-"; ?></td>
-                            <td class="text-center"><?= $Docente['doc_correo']; ?></td>
-                            <td class="text-center"><?= $Docente['doc_direccion']; ?></td>
-                            <td class="text-center"><?= $Docente['doc_telefono']; ?></td>
-                            <td> 
-                                <div class="d-flex justify-content-center align-middle contact_crud">
+                            <td class="text-center align-middle"><?= $Docente['docente']; ?></td>
+                            <td class="text-center align-middle"><?= $Docente['ti_texto']; ?></td>
+                            <td class="text-center align-middle"><?= isset($Docente['doc_numIdentificacion']) ? $Docente['doc_numIdentificacion'] : "-"; ?></td>
+                            <td class="text-center align-middle"><?= $Docente['doc_correo']; ?></td>
+                            <td class="text-center align-middle"><?= $Docente['doc_direccion']; ?></td>
+                            <td class="text-center align-middle"><?= $Docente['doc_telefono']; ?></td>
+                            <td class="align-middle"> 
+                                <div class="d-flex justify-content-center contact_crud">
+                                    <input type="hidden" name="txt_docente_curso" value="<?= $Docente['doc_id']; ?>">
                                     <button class="editarDocenteBtn btn btn-primary mr-2"
-                                            data-idti="<?= $Docente["ti_id"] ?>"
+                                            data-idti="<?= $Docente["ti_id"]; ?>"
                                             data-iddocente="<?= $Docente['doc_id'];?>"
                                             data-pnombre="<?= $Docente['doc_primerNombre'];?>"
                                             data-snombre="<?= $Docente['doc_segundoNombre'];?>"
@@ -203,7 +160,8 @@ if(isset($_GET['eliminado'])) {
                                             data-correo="<?= $Docente['doc_correo']; ?>"
                                             data-ruc="<?= isset($Docente['doc_numIdentificación']) ? $Docente['doc_numIdentificación'] : "" ;?>"
                                             data-telef="<?= $Docente['doc_telefono'];?>"
-                                            data-dir="<?= $Docente['doc_direccion'];?>">
+                                            data-dir="<?= $Docente['doc_direccion'];?>"
+                                            >
                                         Editar
                                     </button>
                                     <button class="eliminarEmpresaBtn btn btn-primary mr-2"
@@ -218,8 +176,7 @@ if(isset($_GET['eliminado'])) {
                 </table>
             </div>
         </div>
-        <!-- Tabla -->
-
+        
         <!-- footer section -->
         <section class="container-fluid footer_section">
             <p>
@@ -227,16 +184,16 @@ if(isset($_GET['eliminado'])) {
                 <a href="https://html.design/">Free Html Templates</a>
             </p>
         </section>
-        <!-- footer section -->
 
         <script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
         <script type="text/javascript" src="../js/bootstrap.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
         <!-- Modales -->
 
         <!-- Modal Agregar -->
         <div class="modal" tabindex="-1" id="modalAdd">
-            <div class="modal-dialog-lg modal-dialog-centered">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Agregar Nuevo Docente</h5>
@@ -245,8 +202,8 @@ if(isset($_GET['eliminado'])) {
                     <div class="modal-body">
                         <form action="../Controladores/docenteController.php" method="post">
                             <div class="row">
-                                <input type="hidden" name="txt_id">
                                 <div class="col-3">
+                                    <input type="hidden" name="txt_id">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="txt_pApellido" placeholder="" name="txt_pApellido" required>
                                         <label for="txt_pApellido">Primer Apellido</label>
@@ -258,7 +215,6 @@ if(isset($_GET['eliminado'])) {
                                         <label for="txt_sApellido">Segundo Apellido</label>
                                     </div>
                                 </div>
-                                <input type="hidden" name="txt_id">
                                 <div class="col-3">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="txt_pNombre" placeholder="" name="txt_pNombre" required>
@@ -267,13 +223,12 @@ if(isset($_GET['eliminado'])) {
                                 </div>
                                 <div class="col-3">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_sNombre" placeholder="" id="txt_sNombre">
+                                        <input class="form-control" type="text" name="txt_sNombre" placeholder="" id="txt_sNombre" required>
                                         <label for="txt_sNombre">Segundo Nombre</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <input type="hidden" name="txt_id">
                                 <div class="col-4">
                                     <div class="form-floating mb-3">
                                         <input type="email" class="form-control" id="txt_correo" placeholder="" name="txt_correo" required>
@@ -296,7 +251,7 @@ if(isset($_GET['eliminado'])) {
                             <div class="row">
                                 <div class="col-3">
                                     <div class="form-floating">
-                                        <select class="form-select" id="floatingSelect" name="txt_idti" aria-label="Floating label select example">
+                                        <select class="form-select" id="floatingSelect" name="txt_idti" aria-label="Floating label select example" required>
                                             <?php foreach($listaTipoIdentificacion as $tipoIden){ ?>
                                             <option value="<?= $tipoIden["ti_id"]; ?>">
                                                 <?= $tipoIden["ti_texto"]; ?>
@@ -308,14 +263,14 @@ if(isset($_GET['eliminado'])) {
                                 </div>
                                 <div class="col-3">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_telefono" placeholder="" id="txt_telefono" required>
-                                        <label for="txt_telefono">Telefono</label>
+                                        <input class="form-control" type="text" name="txt_numIdentif" placeholder="" id="txt_numIdentif" required>
+                                        <label for="txt_numIdentif">Identificación</label>
                                     </div>
                                 </div>
                                 <div class="col-3">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_numIdentif" placeholder="" id="txt_numIdentif" required>
-                                        <label for="txt_numIdentif">Identificación</label>
+                                        <input class="form-control" type="number" name="txt_telefono" placeholder="" id="txt_telefono" required>
+                                        <label for="txt_telefono">Telefono</label>
                                     </div>
                                 </div>
                                 <div class="col-3">
@@ -339,7 +294,7 @@ if(isset($_GET['eliminado'])) {
 
         <!-- Modal Editar -->
         <div class="modal" tabindex="-1" id="modalEdit">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Editar Empresa</h5>
@@ -348,31 +303,82 @@ if(isset($_GET['eliminado'])) {
                     <div class="modal-body">
                         <form action="../Controladores/docenteController.php" method="post">
                             <div class="row">
-                                <input type="hidden" name="txt_id" id="txt_id">
-                                <div class="col-6">
+                                <input type="hidden" name="txt_iddocente" id="txt_iddocente">
+                                <div class="col-3">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
-                                        <label for="txt_nombre">Empresa</label>
+                                        <input type="text" class="form-control" id="txt_pApellido" placeholder="" name="txt_pApellido" required>
+                                        <label for="txt_pApellido">Primer Apellido</label>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-3">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_RUC" placeholder="" id="txt_RUC" required>
-                                        <label for="txt_RUC">RUC</label>
+                                        <input class="form-control" type="text" name="txt_sApellido" placeholder="" id="txt_sApellido">
+                                        <label for="txt_sApellido">Segundo Apellido</label>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="txt_pNombre" placeholder="" name="txt_pNombre" required>
+                                        <label for="txt_pNombre">Primer Nombre</label>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" type="text" name="txt_sNombre" placeholder="" id="txt_sNombre" required>
+                                        <label for="txt_sNombre">Segundo Nombre</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-4">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_telef" placeholder="" id="txt_telef" required>
-                                        <label for="txt_telef">Telefono</label>
+                                        <input type="email" class="form-control" id="txt_correo" placeholder="" name="txt_correo" required>
+                                        <label for="txt_correo">Correo</label>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-4">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_dir" placeholder="" id="txt_dir" required><br> 
-                                        <label for="txt_dir">Dirección</label>
+                                        <input type="password" class="form-control" id="txt_password1_edit" placeholder="Mínimo 6 Dígitos" name="txt_password1">
+                                        <label for="txt_password1">Contraseña</label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-floating mb-3">
+                                        <input type="password" class="form-control" id="txt_password_edit" placeholder="" name="txt_password">
+                                        <label for="txt_password">Confirmar Contraseña</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <input type="hidden" id="idti_hidden" name="idti_hidden" value="0">
+                                <div class="col-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="floatingSelect" name="txt_idti" aria-label="Floating label select example">
+                                            <?php foreach($listaTipoIdentificacion as $tipoIden){ ?>
+                                                <option value="<?= $tipoIden["ti_id"]; ?>" selected>
+                                                    <?= $tipoIden["ti_texto"]; ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                        <label for="floatingSelect">Tipo de Identificación</label>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" type="text" name="txt_numIdentificacion" placeholder="" id="txt_numIdentif" required>
+                                        <label for="txt_numIdentif">Identificación</label>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" type="number" name="txt_telefono" placeholder="" id="txt_telefono" required>
+                                        <label for="txt_telefono">Telefono</label>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" type="text" name="txt_direccion" placeholder="" id="txt_direccion" required>
+                                        <label for="txt_direccion">Direccion</label>
                                     </div>
                                 </div>
                             </div>
@@ -382,12 +388,6 @@ if(isset($_GET['eliminado'])) {
                                     <button value="btnModificar" type="submit" name="accion" class="btn btn-primary">Editar</button>
                                 </div>
                             </div>
-                            
-                            <!--
-                            <button value="btnModificar" type="submit" name="accion">Modificar</button>
-                            <button value="btnEliminar" type="submit" name="accion">Eliminar</button>
-                            <button value="btnCancelar" type="submit" name="accion">Cancelar</button>
-                            -->
                         </form>
                     </div>
                 </div>
@@ -396,6 +396,30 @@ if(isset($_GET['eliminado'])) {
 
         <!-- Modal Eliminar -->
         <div class="modal " tabindex="-1" id="modalDelete">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Eliminar Empresa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="../Controladores/docenteController.php" method="post">
+                            <input type="hidden" name="txt_id" id="txt_id">
+                            <p>¿Está Seguro de Eliminar el Registro?</p>
+                            <div class="row">
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
+                                    <button value="btnEliminar" type="submit" name="accion" class="btn btn-primary">Eliminar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Cursos -->
+        <div class="modal " tabindex="-1" id="modalAsignarCursos">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -437,32 +461,57 @@ if(isset($_GET['eliminado'])) {
                         $('#txt_password1, #txt_password').removeClass('is-valid').addClass('is-invalid');
                     }
                 });
+                
+                $('#txt_password1_edit, #txt_password_edit').keyup(function() {
+                    var password1 = $('#txt_password1_edit').val();
+                    var password2 = $('#txt_password_edit').val();
+
+                    if(password1.length > 5){
+                        if (password1 == password2) {
+                            $('#txt_password1_edit, #txt_password_edit').removeClass('is-invalid').addClass('is-valid');
+                        } else {
+                            $('#txt_password1_edit, #txt_password_edit').removeClass('is-valid').addClass('is-invalid');
+                        }
+                    }else{
+                        $('#txt_password1_edit, #txt_password_edit').removeClass('is-valid').addClass('is-invalid');
+                    }
+                });
 
                 // Inicializar DataTable
                 $('#example').DataTable();
 
                 //Abrir el Modal para Agregar
-                $('#agregarEmpresaBtn').click(function(){
+                $('#agregarDocenteBtn').click(function(){
                     $('#modalAdd').modal('show');
                 });
 
                 //Abrir el Modal Para Editar
-                $('.editarEmpresaBtn').click(function(){
+                $('.editarDocenteBtn').click(function(){
 
+                    console.log("clic editar")
                     // Obtener los datos del botón
-                    var idEmpresa = $(this).data('id');
-                    var nombreEmpresa = $(this).data('nombre');
-                    var rucEmpresa = $(this).data('ruc');
-                    var telefEmpresa = $(this).data('telef');
-                    var dirEmpresa = $(this).data('dir');
-                    console.log(idEmpresa);
+                    var idTipoIdentif = $(this).data('idti');
+                    var idDocente = $(this).data('iddocente');
+                    var pnombre = $(this).data('pnombre');
+                    var snombre = $(this).data('snombre');
+                    var papellido = $(this).data('papellido');
+                    var sapellido = $(this).data('sapellido');
+                    var correo = $(this).data('correo');
+                    var identificacion = $(this).data('ruc');
+                    var telef = $(this).data('telef');
+                    var dir = $(this).data('dir');
 
                     // Asignar los datos al formulario del modal
-                    $('#modalEdit #txt_id').val(idEmpresa);
-                    $('#modalEdit #txt_nombre').val(nombreEmpresa);
-                    $('#modalEdit #txt_RUC').val(rucEmpresa);
-                    $('#modalEdit #txt_telef').val(telefEmpresa);
-                    $('#modalEdit #txt_dir').val(dirEmpresa);
+                    $('#modalEdit #floatingSelect').val(idTipoIdentif);
+                    $('#modalEdit #txt_iddocente').val(idDocente);
+                    $('#modalEdit #txt_pNombre').val(pnombre);
+                    $('#modalEdit #txt_sNombre').val(snombre);
+                    $('#modalEdit #txt_pApellido').val(papellido);
+                    $('#modalEdit #txt_sApellido').val(sapellido);
+                    $('#modalEdit #txt_correo').val(correo);
+                    $('#modalEdit #txt_telefono').val(telef);
+                    $('#modalEdit #txt_direccion').val(dir);
+                    $('#modalEdit #txt_numIdentif').val(identificacion);
 
                     //Activar el Modal
                     $('#modalEdit').modal('show');
@@ -470,8 +519,14 @@ if(isset($_GET['eliminado'])) {
 
                 //Abrir el Modal Para Eliminar
                 $('.eliminarEmpresaBtn').click(function(){
-                    var idEmpresa = $(this).data('id');
-                    $('#modalDelete #txt_id').val(idEmpresa);
+                    var idDocente = $(this).data('id');
+                    $('#modalDelete #txt_id').val(idDocente);
+                    $('#modalDelete').modal('show');
+                });
+
+                $('.asignarCursoBtn').click(function(){
+                    var idDocente = $(this).data('id');
+                    $('#modalDelete #txt_id').val(idDocente);
                     $('#modalDelete').modal('show');
                 });
             });

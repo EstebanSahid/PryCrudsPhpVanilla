@@ -7,7 +7,6 @@ var_dump($accion);
 
 switch($accion){
     case "btnAgregar":
-
         $pass1 = (isset($_POST['txt_password1'])) ? $_POST['txt_password1'] : "";
         $pass2 = (isset($_POST['txt_password'])) ? $_POST['txt_password'] : "";
 
@@ -47,27 +46,37 @@ switch($accion){
         }
         break;
     case "btnModificar":
-        echo "clic a editar";
-        /*if((isset($_POST['txt_id']))){
-            $id_empresa = $_POST['txt_id'];
-            $nombre_empresa = $_POST['txt_nombre'];
-            $ruc = $_POST['txt_RUC'];
-            $telefono = $_POST['txt_telef'];
-            $direccion = $_POST['txt_dir'];
+        $pass1 = (isset($_POST['txt_password1'])) ? $_POST['txt_password1'] : "";
+        $pass2 = (isset($_POST['txt_password'])) ? $_POST['txt_password'] : "";
 
-            $update=$pdo->prepare("UPDATE empresa SET 
-                emp_nombre = :val1,
-                emp_RUC = :val2,
-                emp_telefono = :val3,
-                emp_direccion = :val4,
-                emp_fechaModificacion = NOW()
-                WHERE emp_id = :val5");
+        if ($pass1 == $pass2) {
+            $update = $pdo->prepare("UPDATE docente SET
+                                doc_primerNombre = :val1, 
+                                doc_segundoNombre = :val2, 
+                                doc_primerApellido = :val3, 
+                                doc_segundoApellido = :val4, 
+                                doc_correo = :val5, 
+                                doc_telefono = :val6, 
+                                doc_direccion = :val7, 
+                                doc_fechaModificacion = NOW(), 
+                                ti_id = :val9, 
+                                doc_numIdentificacion = :val10
+                                " . (!empty($_POST['txt_password']) ? ", doc_clave = :val8" : "") . "
+                            WHERE doc_id = :val11");
 
-            $update->bindParam(':val1',$nombre_empresa);
-            $update->bindParam(':val2',$ruc);
-            $update->bindParam(':val3',$telefono);
-            $update->bindParam(':val4',$direccion);
-            $update->bindParam(':val5',$id_empresa);
+            $update->bindParam(':val1', $_POST['txt_pNombre']);
+            $update->bindParam(':val2', $_POST['txt_sNombre']);
+            $update->bindParam(':val3', $_POST['txt_pApellido']);
+            $update->bindParam(':val4', $_POST['txt_sApellido']);
+            $update->bindParam(':val5', $_POST['txt_correo']);
+            $update->bindParam(':val6', $_POST['txt_telefono']);
+            $update->bindParam(':val7', $_POST['txt_direccion']);
+            $update->bindParam(':val9', $_POST['txt_idti']);
+            $update->bindParam(':val10', $_POST['txt_numIdentificacion']);
+            $update->bindParam(':val11', $_POST['txt_iddocente']);
+            if (!empty($_POST['txt_password'])) {
+                $update->bindParam(':val8', $passSha);
+            }
 
             if ($update->execute()) {
                 header("Location: ../Vistas/docenteView.php?editado=true");
@@ -76,21 +85,22 @@ switch($accion){
                 header("Location: ../Vistas/docenteView.php?editado=false");
                 exit();
             }
-        }else{
-            header("Location: ../Vistas/docenteView.php?eliminado=false");
+        } else {
+            header("Location: ../Vistas/docenteView.php?guardado=cdif");
             exit();
-        }*/
+        }
         break; 
     case "btnEliminar":
         if((isset($_POST['txt_id']))){
-            $id_empresa = $_POST['txt_id'];
+            $id_docente = $_POST['txt_id'];
 
-            $update=$pdo->prepare("UPDATE empresa SET 
-                emp_estado = 0,
-                emp_fechaModificacion = NOW()
-                WHERE emp_id = :val1");
+            $update=$pdo->prepare("UPDATE docente SET 
+                doc_estado = 0,
+                doc_fechaModificacion = NOW(),
+                doc_fechaInactivacion = NOW()
+                WHERE doc_id = :val1");
 
-            $update->bindParam(':val1',$id_empresa);
+            $update->bindParam(':val1',$id_docente);
 
             if ($update->execute()) {
                 header("Location: ../Vistas/docenteView.php?eliminado=true");

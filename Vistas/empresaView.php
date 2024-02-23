@@ -92,88 +92,8 @@ if(isset($_GET['eliminado'])) {
     <body>
         <div class="hero_area">
             <!-- Menu -->
-            <header class="header_section">
-                <div class="container-fluid">
-                    <nav class="navbar navbar-expand-lg custom_nav-container ">
-                    <a class="navbar-brand" href="../index.php">
-                        <span>
-                        ACME Cia. Ltda.
-                        </span>
-                    </a>
-                    <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse"
-                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <div class="d-flex mx-auto flex-column flex-lg-row align-items-center">
-                        <ul class="navbar-nav  ">
-                            <li class="nav-item">
-                                <a class="nav-link" href="./empresaView.php">Empresas <span class="sr-only">(current)</span></a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./docenteView.php"> Docentes </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./cursoView.php"> Cursos </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./alumnoView.php">Alumnos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./planifView.php">Planificacion</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./evaluacionView.php">Evaluación</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Login</a>
-                            </li>
-                        </ul>
-                        </div>
-                    </div>
-                    <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
-                        <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-                    </form>
-                    </nav>
-                </div>
-            </header>
+            <?php include 'header.html'; ?>
             <!-- Menu -->
-
-            <!-- slider section 
-            <section class=" slider_section position-relative">
-                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="slider_item-box layout_padding2">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="img-box">
-                                            <div>
-                                                <img src="images/slider-img.jpg" alt="" class="" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="detail-box">
-                                            <div>
-                                                <h1>
-                                                    ACME <br>
-                                                    Cia. <br>
-                                                    <span>
-                                                    Ltda
-                                                    </span>
-                                                </h1>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>-->
         </div>
 
         <!-- Tabla -->
@@ -193,27 +113,28 @@ if(isset($_GET['eliminado'])) {
                 <table id="example" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="text-center">Empresa</th>
-                            <th class="text-center">RUC</th>
-                            <th class="text-center">Telefono</th>
-                            <th class="text-center">Direccion</th>
-                            <th class="text-center">Acciones</th>
+                            <th class="text-center align-middle">Empresa</th>
+                            <th class="text-center align-middle">RUC</th>
+                            <th class="text-center align-middle">Telefono</th>
+                            <th class="text-center align-middle">Direccion</th>
+                            <th class="text-center align-middle">Acciones</th>
                         </tr>
                     </thead>
                     <?php foreach($listaEmpresas as $empresa){ ?>
                         <tr>
-                            <td class="text-center"><?= $empresa['emp_nombre']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_RUC']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_telefono']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_direccion']; ?></td>
-                            <td> 
-                                <div class="d-flex justify-content-center align-middle contact_crud">
+                            <td class="text-center align-middle"><?= $empresa['emp_nombre']; ?></td>
+                            <td class="text-center align-middle"><?= $empresa['emp_RUC']; ?></td>
+                            <td class="text-center align-middle"><?= $empresa['emp_telefono']; ?></td>
+                            <td class="text-center align-middle"><?= $empresa['emp_direccion']; ?></td>
+                            <td class="align-middle"> 
+                                <div class="d-flex justify-content-center contact_crud">
                                     <button class="editarEmpresaBtn btn btn-primary mr-2"
                                             data-id="<?= $empresa['emp_id'];?>"
                                             data-nombre="<?= $empresa['emp_nombre'];?>"
                                             data-ruc="<?= $empresa['emp_RUC'];?>"
                                             data-telef="<?= $empresa['emp_telefono'];?>"
-                                            data-dir="<?= $empresa['emp_direccion'];?>">
+                                            data-dir="<?= $empresa['emp_direccion'];?>"
+                                            >
                                         Editar
                                     </button>
                                     <button class="eliminarEmpresaBtn btn btn-primary mr-2"

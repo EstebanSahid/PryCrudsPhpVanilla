@@ -60,10 +60,10 @@
                                     <a class="nav-link" href="./Vistas/empresaView.php">Empresas <span class="sr-only">(current)</span></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="./Vistas/docenteView.php"> Docentes </a>
+                                    <a class="nav-link" href="./Vistas/cursoView.php"> Cursos </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="./Vistas/cursoView.php"> Cursos </a>
+                                    <a class="nav-link" href="./Vistas/docenteView.php"> Docentes </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="./Vistas/alumnoView.php">Alumnos</a>
