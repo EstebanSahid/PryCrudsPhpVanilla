@@ -1,12 +1,36 @@
 <?php
 include '../Conexion/conexion.php';
 
-$index = $pdo->prepare("SELECT * FROM empresa WHERE emp_estado = 1");
-$index -> execute();
-$listaEmpresas = $index->fetchAll(PDO::FETCH_ASSOC);
+$indexTabla = [];
+$filtro = (isset($_POST['txt_tipoAsignacion'])) ? $_POST['txt_tipoAsignacion'] : "";
 
+if(isset($filtro)){
+    if($filtro == 1){
+        //Curso
+        $index = $pdo->prepare("SELECT 
+                                    cu_nombre as nombre,
+                                    cu_fechaCreacion as fecha_creacion,
+                                    cu_id as id 
+                                FROM cursos WHERE cu_estado = 1 AND emp_id = 1");
+        $index -> execute();
+        $indexTabla = $index->fetchAll(PDO::FETCH_ASSOC);
 
-if(isset($_GET['guardado'])) {
+    }elseif($filtro == 2){
+        //Docente
+        $index = $pdo->prepare("SELECT 
+                                    CONCAT(doc_primerApellido,' ', doc_primerNombre, ' ', doc_segundoNombre) as nombre,
+                                    doc_fechaCreacion as fecha_creacion,
+                                    doc_id as id
+                                FROM docente WHERE doc_estado = 1");
+        $index -> execute();
+        $indexTabla = $index->fetchAll(PDO::FETCH_ASSOC);
+        
+    }else{
+        //echo "Error";
+    }
+}
+
+/*if(isset($_GET['guardado'])) {
     if ($_GET['guardado'] == "true") {
         echo '  <script>
                     alert("La inserción fue exitosa.");
@@ -46,8 +70,8 @@ if(isset($_GET['eliminado'])) {
                     window.history.replaceState({}, document.title, window.location.pathname);
                 </script>';
     }
-}
-//print_r($listaEmpresas);
+}*/
+//print_r($indexTabla);
 ?>
 
 <!DOCTYPE html>
@@ -94,110 +118,71 @@ if(isset($_GET['eliminado'])) {
             <!-- Menu -->
             <?php include 'header.html'; ?>
             <!-- Menu -->
-
-            <!-- slider section 
-            <section class=" slider_section position-relative">
-                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="slider_item-box layout_padding2">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="img-box">
-                                            <div>
-                                                <img src="images/slider-img.jpg" alt="" class="" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="detail-box">
-                                            <div>
-                                                <h1>
-                                                    ACME <br>
-                                                    Cia. <br>
-                                                    <span>
-                                                    Ltda
-                                                    </span>
-                                                </h1>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>-->
         </div>
 
-        <!-- Tabla -->
-        <div class="container pt-4">
-            <div class="row">
-                <div class="col-4">
-                    <div class="col-4 d-flex justify-content-start service_container">
-                        <div class="d-flex justify-content-center contact_section">
-                            <!-- Default dropend button -->
-                            <div class="btn-group dropend">
-                                <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Administrar
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" href="./asignarCursoDocenteView.php">Asignar Curso a Docente</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="./matriculaView.php">Matricula Alumno</a>
-                                    </li>
-                                </ul>
-                            </div>
+        <!-- Select Asignar -->
+        <div class="container p-4">
+            <form action="" method="post">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect" name="txt_tipoAsignacion" aria-label="Floating label select example" required>
+                                <option value="1">Curso</option>
+                                <option value="2">Docente</option>
+                            </select>
+                            <label for="floatingSelect">Asignar Por</label>
                         </div>
                     </div>
-                </div>
-                <div class="col-4">
-                    
-
-                </div>
-                <div class="col-4 d-flex justify-content-end service_container">
-                    <div class="d-flex justify-content-center contact_section">
-                        <button id="agregarEmpresaBtn">
-                            Agregar Planificacion
-                        </button>
+                    <div class="col-3 my-auto">
+                        <button value="btnFiltrar" type="submit" name="accion" class="btn btn-primary">Filtrar</button>
                     </div>
                 </div>
-            </div>
-
+            </form>
+        </div>
+        <!-- Select Asignar -->
+        <div class="divider border-bottom"></div>
+        <!-- Tabla -->
+        <div class="container ">
             <div class="row pt-4">
                 <table id="example" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="text-center">Empresa</th>
-                            <th class="text-center">RUC</th>
-                            <th class="text-center">Telefono</th>
-                            <th class="text-center">Direccion</th>
+                            <?php if($filtro == 1): ?>
+                                <th class="text-center">Curso</th>
+                                
+                            <?php elseif($filtro == 2): ?>
+                                <th class="text-center">Docente</th>
+                                
+                            <?php endif; ?>
+                            <th class="text-center">Fecha de Creacion</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <?php foreach($listaEmpresas as $empresa){ ?>
+                    <?php foreach($indexTabla as $ind){ ?>
                         <tr>
-                            <td class="text-center"><?= $empresa['emp_nombre']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_RUC']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_telefono']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_direccion']; ?></td>
+                            <td class="text-center"><?= $ind['nombre']; ?></td>
+                            <td class="text-center"><?= $ind['fecha_creacion']; ?></td>
                             <td> 
                                 <div class="d-flex justify-content-center align-middle contact_crud">
-                                    <button class="editarEmpresaBtn btn btn-primary mr-2"
-                                            data-id="<?= $empresa['emp_id'];?>"
-                                            data-nombre="<?= $empresa['emp_nombre'];?>"
-                                            data-ruc="<?= $empresa['emp_RUC'];?>"
-                                            data-telef="<?= $empresa['emp_telefono'];?>"
-                                            data-dir="<?= $empresa['emp_direccion'];?>">
-                                        Editar
+                                <?php if($filtro == 1): ?>
+                                    <button class="verDocentes btn btn-primary mr-2"
+                                        data-id="<?= $ind['id'] ?>">
+                                        Visualizar
                                     </button>
-                                    <button class="eliminarEmpresaBtn btn btn-primary mr-2"
-                                            data-id="<?= $empresa['emp_id'];?>">
-                                        Eliminar
+                                    <button class="asignarDocentes btn btn-primary mr-2"
+                                        data-id="<?= $ind['id'] ?>">
+                                        Asignar Docente
                                     </button>
+                                <?php elseif($filtro == 2): ?>
+                                    <button class="verCursos btn btn-primary mr-2"
+                                        data-id="<?= $ind['id'] ?>">
+                                        Visualizar
+                                    </button>
+                                    <button class="asignarCursos btn btn-primary mr-2"
+                                        data-id="<?= $ind['id'] ?>">
+                                        Asignar Curso
+                                    </button>
+                                <?php endif; ?>
                                 </div>
                             </td>
                             
@@ -206,6 +191,7 @@ if(isset($_GET['eliminado'])) {
                 </table>
             </div>
         </div>
+        
         <!-- Tabla -->
 
         <!-- footer section -->
@@ -368,8 +354,24 @@ if(isset($_GET['eliminado'])) {
                 // Inicializar DataTable
                 $('#example').DataTable();
 
-                //Abrir el Modal para Agregar
-                $('#agregarEmpresaBtn').click(function(){
+                //Cursos
+                $('#asignarCursos').click(function(){
+                    console.log("click aqui")
+                    $('#modalAdd').modal('show');
+                });
+
+                $('#verCursos').click(function(){
+                    console.log("click aqui")
+                    $('#modalAdd').modal('show');
+                });
+
+                //Docentes
+                $('#asignarDocentes').click(function(){
+                    console.log("click aqui")
+                    $('#modalAdd').modal('show');
+                });
+
+                $('#verDocentes').click(function(){
                     console.log("click aqui")
                     $('#modalAdd').modal('show');
                 });

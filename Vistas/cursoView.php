@@ -1,21 +1,28 @@
 <?php
 include '../Conexion/conexion.php';
 
-$index = $pdo->prepare("SELECT * FROM empresa WHERE emp_estado = 1");
+$index = $pdo->prepare("SELECT * FROM cursos WHERE emp_id = 1 AND cu_estado = 1");
 $index -> execute();
-$listaEmpresas = $index->fetchAll(PDO::FETCH_ASSOC);
-
+$listaCursos = $index->fetchAll(PDO::FETCH_ASSOC);
 
 if(isset($_GET['guardado'])) {
     if ($_GET['guardado'] == "true") {
         echo '  <script>
                     alert("La inserción fue exitosa.");
-                    window.history.replaceState({}, document.title, window.location.pathname);
+                    var url = window.location.href.split("?")[0]; // Obtiene la parte de la URL antes del "?"
+                    window.history.replaceState({}, document.title, url);
                 </script>';
-    } else {
+    } elseif($_GET['guardado'] == "existe"){
+        echo '  <script>
+                    alert("No insertado, el Curso ya existe");
+                    var url = window.location.href.split("?")[0]; // Obtiene la parte de la URL antes del "?"
+                    window.history.replaceState({}, document.title, url);
+                </script>';
+    }else {
         echo '  <script>
                     alert("Hubo un error durante la inserción.");
-                    window.history.replaceState({}, document.title, window.location.pathname);
+                    var url = window.location.href.split("?")[0]; // Obtiene la parte de la URL antes del "?"
+                    window.history.replaceState({}, document.title, url);
                 </script>';
     }
 }
@@ -24,12 +31,20 @@ if(isset($_GET['editado'])) {
     if ($_GET['editado'] == "true") {
         echo '  <script>
                     alert("Modificado Exitosamente.");
-                    window.history.replaceState({}, document.title, window.location.pathname);
+                    var url = window.location.href.split("?")[0]; // Obtiene la parte de la URL antes del "?"
+                    window.history.replaceState({}, document.title, url);
                 </script>';
-    } else {
+    } elseif($_GET['editado'] == "existe"){
+        echo '  <script>
+                    alert("No Modificado, el Curso ya existe");
+                    var url = window.location.href.split("?")[0]; // Obtiene la parte de la URL antes del "?"
+                    window.history.replaceState({}, document.title, url);
+                </script>';
+    }else {
         echo '  <script>
                     alert("Hubo un error durante la Modificación del Registro.");
-                    window.history.replaceState({}, document.title, window.location.pathname);
+                    var url = window.location.href.split("?")[0]; // Obtiene la parte de la URL antes del "?"
+                    window.history.replaceState({}, document.title, url);
                 </script>';
     }
 }
@@ -38,16 +53,18 @@ if(isset($_GET['eliminado'])) {
     if ($_GET['eliminado'] == "true") {
         echo '  <script>
                     alert("Eliminado Exitosamente.");
-                    window.history.replaceState({}, document.title, window.location.pathname);
+                    var url = window.location.href.split("?")[0]; // Obtiene la parte de la URL antes del "?"
+                    window.history.replaceState({}, document.title, url);
                 </script>';
     } else {
         echo '  <script>
                     alert("Hubo un error durante al Eliminar  el Registro.");
-                    window.history.replaceState({}, document.title, window.location.pathname);
+                    var url = window.location.href.split("?")[0]; // Obtiene la parte de la URL antes del "?"
+                    window.history.replaceState({}, document.title, url);
                 </script>';
     }
 }
-//print_r($listaEmpresas);
+//print_r($listaCursos);
 ?>
 
 <!DOCTYPE html>
@@ -90,89 +107,50 @@ if(isset($_GET['eliminado'])) {
     </head>
 
     <body>
+        <!-- Menu -->
         <div class="hero_area">
-            <!-- Menu -->
             <?php include 'header.html'; ?>
-            <!-- Menu -->
-
-            <!-- slider section 
-            <section class=" slider_section position-relative">
-                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="slider_item-box layout_padding2">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="img-box">
-                                            <div>
-                                                <img src="images/slider-img.jpg" alt="" class="" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="detail-box">
-                                            <div>
-                                                <h1>
-                                                    ACME <br>
-                                                    Cia. <br>
-                                                    <span>
-                                                    Ltda
-                                                    </span>
-                                                </h1>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        </div>
+        
+        <div class="container pt-4">
+            <!-- Boton -->
+            <div class="row">
+                <div class="col-8"></div>
+                <div class="col-4">
+                    <div class="d-flex justify-content-end service_container">
+                        <div class="d-flex justify-content-center contact_section">
+                            <button id="agregarCursoBtn">
+                                Agregar Curso
+                            </button>
                         </div>
                     </div>
                 </div>
-            </section>-->
-        </div>
-
-        <!-- Tabla -->
-        <div class="container pt-4">
-            <div class="row">
-                <div class="col-8"></div>
-                <div class="col-4 d-flex justify-content-end service_container">
-                    <div class="d-flex justify-content-center contact_section">
-                        <button id="agregarEmpresaBtn">
-                            Agregar Curso
-                        </button>
-                    </div>
-                </div>
             </div>
-
+            <!-- Tabla -->
             <div class="row pt-4">
                 <table id="example" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="text-center">Empresa</th>
-                            <th class="text-center">RUC</th>
-                            <th class="text-center">Telefono</th>
-                            <th class="text-center">Direccion</th>
-                            <th class="text-center">Acciones</th>
+                            <th class="text-center align-middle">Curso</th>
+                            <th class="text-center align-middle">Fecha de Creación</th>
+                            <th class="text-center align-middle">Acciones</th>
                         </tr>
                     </thead>
-                    <?php foreach($listaEmpresas as $empresa){ ?>
+                    <?php $idti_hidden = 0;
+                    foreach($listaCursos as $Curso){?>
                         <tr>
-                            <td class="text-center"><?= $empresa['emp_nombre']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_RUC']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_telefono']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_direccion']; ?></td>
-                            <td> 
-                                <div class="d-flex justify-content-center align-middle contact_crud">
-                                    <button class="editarEmpresaBtn btn btn-primary mr-2"
-                                            data-id="<?= $empresa['emp_id'];?>"
-                                            data-nombre="<?= $empresa['emp_nombre'];?>"
-                                            data-ruc="<?= $empresa['emp_RUC'];?>"
-                                            data-telef="<?= $empresa['emp_telefono'];?>"
-                                            data-dir="<?= $empresa['emp_direccion'];?>">
+                            <td class="text-center align-middle"><?= $Curso['cu_nombre']; ?></td>
+                            <td class="text-center align-middle"><?= $Curso['cu_fechaCreacion']; ?></td>
+                            <td class="align-middle"> 
+                                <div class="d-flex justify-content-center contact_crud">
+                                    <button class="editarCursoBtn btn btn-primary mr-2"
+                                            data-id="<?= $Curso['cu_id'];?>"
+                                            data-nombre="<?= $Curso['cu_nombre']; ?>"
+                                            >
                                         Editar
                                     </button>
                                     <button class="eliminarEmpresaBtn btn btn-primary mr-2"
-                                            data-id="<?= $empresa['emp_id'];?>">
+                                            data-id="<?= $Curso['cu_id'];?>">
                                         Eliminar
                                     </button>
                                 </div>
@@ -183,8 +161,7 @@ if(isset($_GET['eliminado'])) {
                 </table>
             </div>
         </div>
-        <!-- Tabla -->
-
+        
         <!-- footer section -->
         <section class="container-fluid footer_section">
             <p>
@@ -192,10 +169,10 @@ if(isset($_GET['eliminado'])) {
                 <a href="https://html.design/">Free Html Templates</a>
             </p>
         </section>
-        <!-- footer section -->
 
         <script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
         <script type="text/javascript" src="../js/bootstrap.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
         <!-- Modales -->
 
@@ -204,38 +181,17 @@ if(isset($_GET['eliminado'])) {
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Agregar Nueva Empresa</h5>
+                        <h5 class="modal-title">Agregar Nuevo Curso</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
+                        <form action="../Controladores/CursoController.php" method="post">
                             <div class="row">
-                                <input type="hidden" name="txt_id">
-                                <div class="col-6">
+                                <div class="col">
+                                    <input type="hidden" name="txt_id">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
-                                        <label for="txt_nombre">Empresa</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_RUC" placeholder="" id="txt_RUC" required>
-                                        <label for="txt_RUC">RUC</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_telef" placeholder="" id="txt_telef" required>
-                                        <label for="txt_telef">Telefono</label>
-                                        
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_dir" placeholder="" id="txt_dir" required><br> 
-                                        <label for="txt_dir">Dirección</label>
+                                        <input type="text" class="form-control" id="txt_curso" placeholder="" name="txt_curso" required>
+                                        <label for="txt_curso">Curso</label>
                                     </div>
                                 </div>
                             </div>
@@ -245,12 +201,6 @@ if(isset($_GET['eliminado'])) {
                                     <button value="btnAgregar" type="submit" name="accion" class="btn btn-primary">Agregar</button>
                                 </div>
                             </div>
-                            
-                            <!--
-                            <button value="btnModificar" type="submit" name="accion">Modificar</button>
-                            <button value="btnEliminar" type="submit" name="accion">Eliminar</button>
-                            <button value="btnCancelar" type="submit" name="accion">Cancelar</button>
-                            -->
                         </form>
                     </div>
                 </div>
@@ -259,40 +209,20 @@ if(isset($_GET['eliminado'])) {
 
         <!-- Modal Editar -->
         <div class="modal" tabindex="-1" id="modalEdit">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Editar Empresa</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
+                    <form action="../Controladores/CursoController.php" method="post">
                             <div class="row">
-                                <input type="hidden" name="txt_id" id="txt_id">
-                                <div class="col-6">
+                                <div class="col">
+                                    <input type="hidden" name="txt_id" id="txt_id">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
-                                        <label for="txt_nombre">Empresa</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_RUC" placeholder="" id="txt_RUC" required>
-                                        <label for="txt_RUC">RUC</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_telef" placeholder="" id="txt_telef" required>
-                                        <label for="txt_telef">Telefono</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_dir" placeholder="" id="txt_dir" required><br> 
-                                        <label for="txt_dir">Dirección</label>
+                                        <input type="text" class="form-control" id="txt_curso" placeholder="" name="txt_curso" required>
+                                        <label for="txt_curso">Curso</label>
                                     </div>
                                 </div>
                             </div>
@@ -302,12 +232,6 @@ if(isset($_GET['eliminado'])) {
                                     <button value="btnModificar" type="submit" name="accion" class="btn btn-primary">Editar</button>
                                 </div>
                             </div>
-                            
-                            <!--
-                            <button value="btnModificar" type="submit" name="accion">Modificar</button>
-                            <button value="btnEliminar" type="submit" name="accion">Eliminar</button>
-                            <button value="btnCancelar" type="submit" name="accion">Cancelar</button>
-                            -->
                         </form>
                     </div>
                 </div>
@@ -323,7 +247,7 @@ if(isset($_GET['eliminado'])) {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
+                        <form action="../Controladores/CursoController.php" method="post">
                             <input type="hidden" name="txt_id" id="txt_id">
                             <p>¿Está Seguro de Eliminar el Registro?</p>
                             <div class="row">
@@ -342,32 +266,26 @@ if(isset($_GET['eliminado'])) {
         <!-- Scripts -->
         <script>
             $(document).ready(function() {
+
                 // Inicializar DataTable
                 $('#example').DataTable();
 
                 //Abrir el Modal para Agregar
-                $('#agregarEmpresaBtn').click(function(){
-                    console.log("click aqui")
+                $('#agregarCursoBtn').click(function(){
                     $('#modalAdd').modal('show');
                 });
 
                 //Abrir el Modal Para Editar
-                $('.editarEmpresaBtn').click(function(){
+                $('.editarCursoBtn').click(function(){
 
+                    console.log("clic editar")
                     // Obtener los datos del botón
-                    var idEmpresa = $(this).data('id');
-                    var nombreEmpresa = $(this).data('nombre');
-                    var rucEmpresa = $(this).data('ruc');
-                    var telefEmpresa = $(this).data('telef');
-                    var dirEmpresa = $(this).data('dir');
-                    console.log(idEmpresa);
+                    var idCurso = $(this).data('id');
+                    var nombre = $(this).data('nombre');
 
                     // Asignar los datos al formulario del modal
-                    $('#modalEdit #txt_id').val(idEmpresa);
-                    $('#modalEdit #txt_nombre').val(nombreEmpresa);
-                    $('#modalEdit #txt_RUC').val(rucEmpresa);
-                    $('#modalEdit #txt_telef').val(telefEmpresa);
-                    $('#modalEdit #txt_dir').val(dirEmpresa);
+                    $('#modalEdit #txt_id').val(idCurso);
+                    $('#modalEdit #txt_curso').val(nombre);
 
                     //Activar el Modal
                     $('#modalEdit').modal('show');
@@ -375,8 +293,15 @@ if(isset($_GET['eliminado'])) {
 
                 //Abrir el Modal Para Eliminar
                 $('.eliminarEmpresaBtn').click(function(){
-                    var idEmpresa = $(this).data('id');
-                    $('#modalDelete #txt_id').val(idEmpresa);
+                    var idCurso = $(this).data('id');
+                    console.log(idCurso);
+                    $('#modalDelete #txt_id').val(idCurso);
+                    $('#modalDelete').modal('show');
+                });
+
+                $('.asignarCursoBtn').click(function(){
+                    var idCurso = $(this).data('id');
+                    $('#modalDelete #txt_id').val(idCurso);
                     $('#modalDelete').modal('show');
                 });
             });
