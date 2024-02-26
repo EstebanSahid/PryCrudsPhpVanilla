@@ -189,7 +189,8 @@ if(isset($_GET['eliminado'])) {
                                         Visualizar
                                     </button>
                                     <button class="asignarDocentes btn btn-primary mr-2"
-                                        data-id="<?= $ind['id'] ?>">
+                                        data-id="<?= $ind['id'] ?>"
+                                        data-nombre="<?= $ind['nombre']; ?>">
                                         Asignar Docente
                                     </button>
                                 <?php elseif($filtro == 2): ?>
@@ -199,7 +200,8 @@ if(isset($_GET['eliminado'])) {
                                         Visualizar
                                     </button>
                                     <button class="asignarCursos btn btn-primary mr-2"
-                                        data-id="<?= $ind['id'] ?>">
+                                        data-id="<?= $ind['id'] ?>"
+                                        data-nombre="<?= $ind['nombre']; ?>">
                                         Asignar Curso
                                     </button>
                                 <?php endif; ?>
@@ -227,50 +229,32 @@ if(isset($_GET['eliminado'])) {
 
         <!-- Modales -->
 
-        <!-- Modal Agregar -->
-        <div class="modal" tabindex="-1" id="modalAdd">
-            <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal Agregar Docentes -->
+        <div class="modal" tabindex="-1" id="modalAddDocente">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Agregar Nueva Empresa</h5>
+                        <h5 class="modal-title">Asignar Docente</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
+                        <form action="../Controladores/asignarCursoDocenteController.php" method="post">
                             <div class="row">
-                                <input type="hidden" name="txt_id">
+                                <input type="hidden" name="txt_id" id="txt_id">
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
-                                        <label for="txt_nombre">Empresa</label>
+                                        <input type="text" class="form-control" id="txt_docente" placeholder="" name="txt_docente" readonly>
+                                        <label for="txt_docente">Curso</label>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_RUC" placeholder="" id="txt_RUC" required>
-                                        <label for="txt_RUC">RUC</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_telef" placeholder="" id="txt_telef" required>
-                                        <label for="txt_telef">Telefono</label>
-                                        
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_dir" placeholder="" id="txt_dir" required><br> 
-                                        <label for="txt_dir">Dirección</label>
-                                    </div>
+                                    <section id="addDocente"></section>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="d-flex justify-content-end">
                                     <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                                    <button value="btnAgregar" type="submit" name="accion" class="btn btn-primary">Agregar</button>
+                                    <button value="btnAgregarDocente" type="submit" name="accion" class="btn btn-primary">Agregar</button>
                                 </div>
                             </div>
                         </form>
@@ -279,49 +263,32 @@ if(isset($_GET['eliminado'])) {
             </div>
         </div>
 
-        <!-- Modal Editar -->
-        <div class="modal" tabindex="-1" id="modalEdit">
-            <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal Agregar Cursos  -->
+        <div class="modal" tabindex="-1" id="modalAddCurso">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Editar Empresa</h5>
+                        <h5 class="modal-title">Asignar Curso</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
+                        <form action="../Controladores/asignarCursoDocenteController.php" method="post">
                             <div class="row">
                                 <input type="hidden" name="txt_id" id="txt_id">
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
-                                        <label for="txt_nombre">Empresa</label>
+                                        <input type="text" class="form-control" id="txt_curso" placeholder="" name="txt_curso" readonly>
+                                        <label for="txt_curso">Docente</label>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_RUC" placeholder="" id="txt_RUC" required>
-                                        <label for="txt_RUC">RUC</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_telef" placeholder="" id="txt_telef" required>
-                                        <label for="txt_telef">Telefono</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_dir" placeholder="" id="txt_dir" required><br> 
-                                        <label for="txt_dir">Dirección</label>
-                                    </div>
+                                    <section id="addCurso"></section>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="d-flex justify-content-end">
                                     <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                                    <button value="btnModificar" type="submit" name="accion" class="btn btn-primary">Editar</button>
+                                    <button value="btnAgregarCurso" type="submit" name="accion" class="btn btn-primary">Agregar</button>
                                 </div>
                             </div>
                         </form>
@@ -370,11 +337,10 @@ if(isset($_GET['eliminado'])) {
                 $('#example').DataTable();
 
                 //Cursos
-                $('.asignarCursos').click(function(){
+                $('.asignarCursos').click(function(){ addCurso
                     var id = $(this).data('id');
-                    console.log("id");
-                    console.log(id);
-                    //$('#modalAdd').modal('show');
+                    var nombre = $(this).data('nombre');
+                    addCursos(id, nombre);
                 });
 
                 $('.verCursos').click(function(){
@@ -385,12 +351,10 @@ if(isset($_GET['eliminado'])) {
 
                 //Docentes
                 $('.asignarDocentes').click(function(){
-                    console.log("asignar Docentes")
                     var id = $(this).data('id');
-                    console.log("id");
-                    console.log(id);
-                    
-                    //$('#modalAdd').modal('show');
+                    var nombre = $(this).data('nombre');
+                    console.log(id)
+                    addDocentes(id, nombre);
                 });
 
                 $('.verDocentes').click(function(){
@@ -398,6 +362,40 @@ if(isset($_GET['eliminado'])) {
                     var nombre = $(this).data('nombre');
                     mostrarDocentes(id, nombre);
                 });
+
+                function addDocentes(id, nombre) {
+                    $.ajax({
+                        data: {
+                            id: id,
+                        },
+                        url: "../Controladores/asignarCursoDocenteController.php?exec=addDocente",
+                        type: "POST",
+                        success: function (r) {
+                            $('#modalAddDocente #txt_docente').val(nombre);
+                            $('#modalAddDocente #txt_id').val(id);
+                            $('#modalAddDocente').modal('show');
+
+                            $("#addDocente").html(r);
+                        },
+                    });
+                }
+
+                function addCursos(id, nombre) {
+                    $.ajax({
+                        data: {
+                            id: id,
+                        },
+                        url: "../Controladores/asignarCursoDocenteController.php?exec=addCursos",
+                        type: "POST",
+                        success: function (r) {
+                            $('#modalAddCurso #txt_Curso').val(nombre);
+                            $('#modalAddCurso #txt_id').val(id);
+                            $('#modalAddCurso').modal('show');
+
+                            $("#addCurso").html(r);
+                        },
+                    });
+                }
 
                 function mostrarDocentes(id_curso, nombre) {
                     $.ajax({
