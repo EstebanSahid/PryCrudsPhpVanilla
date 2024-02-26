@@ -94,43 +94,16 @@ if(isset($_GET['eliminado'])) {
             <!-- Menu -->
             <?php include 'header.html'; ?>
             <!-- Menu -->
-
-            <!-- slider section 
-            <section class=" slider_section position-relative">
-                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="slider_item-box layout_padding2">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="img-box">
-                                            <div>
-                                                <img src="images/slider-img.jpg" alt="" class="" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="detail-box">
-                                            <div>
-                                                <h1>
-                                                    ACME <br>
-                                                    Cia. <br>
-                                                    <span>
-                                                    Ltda
-                                                    </span>
-                                                </h1>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>-->
         </div>
 
+        <div class="container pt-4">
+            <div class="custom_heading-container">
+                <h3>
+                    Planificar
+                </h3>
+            </div>
+        </div>
+        
         <!-- Tabla -->
         <div class="container pt-4">
             <div class="row">

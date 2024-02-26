@@ -124,9 +124,17 @@ if(isset($_GET['eliminado'])) {
         <div class="container p-4">
             <form action="" method="post">
                 <div class="row">
+                    <div class="custom_heading-container">
+                        <h3>
+                            Asignar Cursos a Docentes
+                        </h3>
+                    </div>
+                </div>
+                <div class="row pt-4">
                     <div class="col-3">
                         <div class="form-floating">
                             <select class="form-select" id="floatingSelect" name="txt_tipoAsignacion" aria-label="Floating label select example" required>
+                                <option value="0">-- Seleccione un Filtro --</option>
                                 <option value="1">Curso</option>
                                 <option value="2">Docente</option>
                             </select>
@@ -140,10 +148,20 @@ if(isset($_GET['eliminado'])) {
             </form>
         </div>
         <!-- Select Asignar -->
+
         <div class="divider border-bottom"></div>
+
+        <div class="pt-3">
+            <?php if($filtro == 1): ?>
+                <h3 class="text-center">Cursos</h3>
+            <?php elseif($filtro == 2): ?>
+                <h3 class="text-center">Docentes</h3>
+            <?php endif; ?>
+        </div>
+
         <!-- Tabla -->
         <div class="container ">
-            <div class="row pt-4">
+            <div class="row pt-2">
                 <table id="example" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
@@ -166,7 +184,8 @@ if(isset($_GET['eliminado'])) {
                                 <div class="d-flex justify-content-center align-middle contact_crud">
                                 <?php if($filtro == 1): ?>
                                     <button class="verDocentes btn btn-primary mr-2"
-                                        data-id="<?= $ind['id'] ?>">
+                                        data-id="<?= $ind['id'] ?>"
+                                        data-nombre="<?= $ind['nombre']; ?>">
                                         Visualizar
                                     </button>
                                     <button class="asignarDocentes btn btn-primary mr-2"
@@ -175,7 +194,8 @@ if(isset($_GET['eliminado'])) {
                                     </button>
                                 <?php elseif($filtro == 2): ?>
                                     <button class="verCursos btn btn-primary mr-2"
-                                        data-id="<?= $ind['id'] ?>">
+                                        data-id="<?= $ind['id'] ?>"
+                                        data-nombre="<?= $ind['nombre']; ?>">
                                         Visualizar
                                     </button>
                                     <button class="asignarCursos btn btn-primary mr-2"
@@ -191,7 +211,6 @@ if(isset($_GET['eliminado'])) {
                 </table>
             </div>
         </div>
-        
         <!-- Tabla -->
 
         <!-- footer section -->
@@ -254,12 +273,6 @@ if(isset($_GET['eliminado'])) {
                                     <button value="btnAgregar" type="submit" name="accion" class="btn btn-primary">Agregar</button>
                                 </div>
                             </div>
-                            
-                            <!--
-                            <button value="btnModificar" type="submit" name="accion">Modificar</button>
-                            <button value="btnEliminar" type="submit" name="accion">Eliminar</button>
-                            <button value="btnCancelar" type="submit" name="accion">Cancelar</button>
-                            -->
                         </form>
                     </div>
                 </div>
@@ -311,37 +324,39 @@ if(isset($_GET['eliminado'])) {
                                     <button value="btnModificar" type="submit" name="accion" class="btn btn-primary">Editar</button>
                                 </div>
                             </div>
-                            
-                            <!--
-                            <button value="btnModificar" type="submit" name="accion">Modificar</button>
-                            <button value="btnEliminar" type="submit" name="accion">Eliminar</button>
-                            <button value="btnCancelar" type="submit" name="accion">Cancelar</button>
-                            -->
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal Eliminar -->
-        <div class="modal " tabindex="-1" id="modalDelete">
+        <!-- Modal Ver Docentes -->
+        <div class="modal " tabindex="-1" id="modalViewDocentes">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Eliminar Empresa</h5>
+                        <h5 class="modal-title">Docentes Asignados</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
-                            <input type="hidden" name="txt_id" id="txt_id">
-                            <p>¿Está Seguro de Eliminar el Registro?</p>
-                            <div class="row">
-                                <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                                    <button value="btnEliminar" type="submit" name="accion" class="btn btn-primary">Eliminar</button>
-                                </div>
-                            </div>
-                        </form>
+                        <h3 id="txt_curso"></h3>
+                        <section class="pt-2" id="showModalViewDocentes"></section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Ver Cursos -->
+        <div class="modal " tabindex="-1" id="modalViewCursos">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cursos Asignados</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 id="txt_docente"></h3>
+                        <section class="pt-2" id="showModalViewCursos"></section>
                     </div>
                 </div>
             </div>
@@ -355,55 +370,64 @@ if(isset($_GET['eliminado'])) {
                 $('#example').DataTable();
 
                 //Cursos
-                $('#asignarCursos').click(function(){
-                    console.log("click aqui")
-                    $('#modalAdd').modal('show');
+                $('.asignarCursos').click(function(){
+                    var id = $(this).data('id');
+                    console.log("id");
+                    console.log(id);
+                    //$('#modalAdd').modal('show');
                 });
 
-                $('#verCursos').click(function(){
-                    console.log("click aqui")
-                    $('#modalAdd').modal('show');
+                $('.verCursos').click(function(){
+                    var id = $(this).data('id');
+                    var nombre = $(this).data('nombre');
+                    mostrarCursos(id, nombre);
                 });
 
                 //Docentes
-                $('#asignarDocentes').click(function(){
-                    console.log("click aqui")
-                    $('#modalAdd').modal('show');
+                $('.asignarDocentes').click(function(){
+                    console.log("asignar Docentes")
+                    var id = $(this).data('id');
+                    console.log("id");
+                    console.log(id);
+                    
+                    //$('#modalAdd').modal('show');
                 });
 
-                $('#verDocentes').click(function(){
-                    console.log("click aqui")
-                    $('#modalAdd').modal('show');
+                $('.verDocentes').click(function(){
+                    var id = $(this).data('id');
+                    var nombre = $(this).data('nombre');
+                    mostrarDocentes(id, nombre);
                 });
 
-                //Abrir el Modal Para Editar
-                $('.editarEmpresaBtn').click(function(){
+                function mostrarDocentes(id_curso, nombre) {
+                    $.ajax({
+                        data: {
+                            id_curso: id_curso,
+                        },
+                        url: "../Controladores/asignarCursoDocenteController.php?exec=mostrarDocente",
+                        type: "POST",
+                        success: function (r) {
+                            $('#modalViewDocentes #txt_curso').text(nombre);
+                            $('#modalViewDocentes').modal('show');
+                            $("#showModalViewDocentes").html(r);
+                        },
+                    });
+                }
 
-                    // Obtener los datos del botón
-                    var idEmpresa = $(this).data('id');
-                    var nombreEmpresa = $(this).data('nombre');
-                    var rucEmpresa = $(this).data('ruc');
-                    var telefEmpresa = $(this).data('telef');
-                    var dirEmpresa = $(this).data('dir');
-                    console.log(idEmpresa);
-
-                    // Asignar los datos al formulario del modal
-                    $('#modalEdit #txt_id').val(idEmpresa);
-                    $('#modalEdit #txt_nombre').val(nombreEmpresa);
-                    $('#modalEdit #txt_RUC').val(rucEmpresa);
-                    $('#modalEdit #txt_telef').val(telefEmpresa);
-                    $('#modalEdit #txt_dir').val(dirEmpresa);
-
-                    //Activar el Modal
-                    $('#modalEdit').modal('show');
-                });
-
-                //Abrir el Modal Para Eliminar
-                $('.eliminarEmpresaBtn').click(function(){
-                    var idEmpresa = $(this).data('id');
-                    $('#modalDelete #txt_id').val(idEmpresa);
-                    $('#modalDelete').modal('show');
-                });
+                function mostrarCursos(id_doc, nombre) {
+                    $.ajax({
+                        data: {
+                            id_doc: id_doc,
+                        },
+                        url: "../Controladores/asignarCursoDocenteController.php?exec=mostrarCurso",
+                        type: "POST",
+                        success: function (r) {
+                            $('#modalViewCursos #txt_docente').text(nombre);
+                            $('#modalViewCursos').modal('show');
+                            $("#showModalViewCursos").html(r);
+                        },
+                    });
+                }
             });
         </script>
         <!-- Scripts -->

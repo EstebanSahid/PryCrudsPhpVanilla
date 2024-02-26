@@ -109,8 +109,16 @@ if(isset($_GET['eliminado'])) {
         <div class="hero_area">
             <?php include 'header.html'; ?>
         </div>
-        
+
         <div class="container pt-4">
+            <div class="custom_heading-container">
+                <h3>
+                    Docentes
+                </h3>
+            </div>
+        </div>
+        
+        <div class="container">
             <!-- Boton -->
             <div class="row">
                 <div class="col-8"></div>

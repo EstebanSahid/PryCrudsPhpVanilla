@@ -94,45 +94,17 @@ if(isset($_GET['eliminado'])) {
             <!-- Menu -->
             <?php include 'header.html'; ?>
             <!-- Menu -->
-
-            <!-- slider section 
-            <section class=" slider_section position-relative">
-                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="slider_item-box layout_padding2">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="img-box">
-                                            <div>
-                                                <img src="images/slider-img.jpg" alt="" class="" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="detail-box">
-                                            <div>
-                                                <h1>
-                                                    ACME <br>
-                                                    Cia. <br>
-                                                    <span>
-                                                    Ltda
-                                                    </span>
-                                                </h1>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>-->
         </div>
 
         <!-- Tabla -->
         <div class="container pt-4">
+            <div class="row">
+                <div class="custom_heading-container">
+                    <h3>
+                        Evaluación
+                    </h3>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-8"></div>
                 <div class="col-4 d-flex justify-content-end service_container">
@@ -245,12 +217,6 @@ if(isset($_GET['eliminado'])) {
                                     <button value="btnAgregar" type="submit" name="accion" class="btn btn-primary">Agregar</button>
                                 </div>
                             </div>
-                            
-                            <!--
-                            <button value="btnModificar" type="submit" name="accion">Modificar</button>
-                            <button value="btnEliminar" type="submit" name="accion">Eliminar</button>
-                            <button value="btnCancelar" type="submit" name="accion">Cancelar</button>
-                            -->
                         </form>
                     </div>
                 </div>
@@ -302,12 +268,6 @@ if(isset($_GET['eliminado'])) {
                                     <button value="btnModificar" type="submit" name="accion" class="btn btn-primary">Editar</button>
                                 </div>
                             </div>
-                            
-                            <!--
-                            <button value="btnModificar" type="submit" name="accion">Modificar</button>
-                            <button value="btnEliminar" type="submit" name="accion">Eliminar</button>
-                            <button value="btnCancelar" type="submit" name="accion">Cancelar</button>
-                            -->
                         </form>
                     </div>
                 </div>

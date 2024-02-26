@@ -96,8 +96,15 @@ if(isset($_GET['eliminado'])) {
             <!-- Menu -->
         </div>
 
-        <!-- Tabla -->
         <div class="container pt-4">
+            <div class="custom_heading-container">
+                <h3>
+                    Empresas
+                </h3>
+            </div>
+        </div>
+        <!-- Tabla -->
+        <div class="container">
             <div class="row">
                 <div class="col-8"></div>
                 <div class="col-4 d-flex justify-content-end service_container">

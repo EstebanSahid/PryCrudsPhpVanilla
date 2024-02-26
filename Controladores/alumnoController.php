@@ -3,8 +3,6 @@ include '../Conexion/conexion.php';
 
 $accion = (isset($_POST['accion'])) ? $_POST['accion'] : "";
 
-var_dump($accion);
-
 switch($accion){
     case "btnAgregar":
         $pass1 = (isset($_POST['txt_password1'])) ? $_POST['txt_password1'] : "";
