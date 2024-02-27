@@ -30,7 +30,7 @@ if(isset($filtro)){
     }
 }
 
-/*if(isset($_GET['guardado'])) {
+if(isset($_GET['guardado'])) {
     if ($_GET['guardado'] == "true") {
         echo '  <script>
                     alert("La inserción fue exitosa.");
@@ -44,7 +44,7 @@ if(isset($filtro)){
     }
 }
 
-if(isset($_GET['editado'])) {
+/*if(isset($_GET['editado'])) {
     if ($_GET['editado'] == "true") {
         echo '  <script>
                     alert("Modificado Exitosamente.");
@@ -254,7 +254,7 @@ if(isset($_GET['eliminado'])) {
                             <div class="row">
                                 <div class="d-flex justify-content-end">
                                     <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                                    <button value="btnAgregarDocente" type="submit" name="accion" class="btn btn-primary">Agregar</button>
+                                    <button value="btnAgregarCurso" type="submit" name="accion" class="btn btn-primary">Agregar</button>
                                 </div>
                             </div>
                         </form>
@@ -263,7 +263,7 @@ if(isset($_GET['eliminado'])) {
             </div>
         </div>
 
-        <!-- Modal Agregar Cursos  -->
+        <!-- Modal Agregar Cursos  --> 
         <div class="modal" tabindex="-1" id="modalAddCurso">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
@@ -277,8 +277,8 @@ if(isset($_GET['eliminado'])) {
                                 <input type="hidden" name="txt_id" id="txt_id">
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="txt_curso" placeholder="" name="txt_curso" readonly>
-                                        <label for="txt_curso">Docente</label>
+                                        <input type="text" class="form-control" id="txt_Curso" placeholder="" name="txt_Curso" readonly>
+                                        <label for="txt_Curso">Docente</label>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -288,7 +288,7 @@ if(isset($_GET['eliminado'])) {
                             <div class="row">
                                 <div class="d-flex justify-content-end">
                                     <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                                    <button value="btnAgregarCurso" type="submit" name="accion" class="btn btn-primary">Agregar</button>
+                                    <button value="btnAgregarDocente" type="submit" name="accion" class="btn btn-primary">Agregar</button>
                                 </div>
                             </div>
                         </form>

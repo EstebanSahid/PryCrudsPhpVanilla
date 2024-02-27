@@ -117,10 +117,30 @@ if (isset($_GET["exec"]) and $_GET["exec"] == "addCursos") {
 $accion = (isset($_POST['accion'])) ? $_POST['accion'] : "";
 
 switch($accion){
-    case "btnAgregarDocente":
-        var_dump($_POST);
-        break;
     case "btnAgregarCurso":
-        var_dump($_POST);
+        guardar($_POST['txt_id'], $_POST['txt_idti']);
         break;
+    case "btnAgregarDocente":
+        guardar($_POST['txt_idti'], $_POST['txt_id']);
+        break;
+}
+
+function guardar($cu_id, $doc_id){
+    global $pdo;
+    $insert = $pdo->prepare("INSERT INTO cursoxdocente 
+                                (cxd_fechaCreacion, cxd_fechaModificacion, 
+                                cu_id, doc_id)
+                            VALUES 
+                                (NOW(), NOW(), :val1, :val2)");
+
+    $insert->bindParam(':val1', $cu_id);
+    $insert->bindParam(':val2', $doc_id);
+
+    if ($insert->execute()) {
+        header("Location: ../Vistas/asignarCursoDocenteView.php?guardado=true");
+        exit();
+    } else {
+        header("Location: ../Vistas/asignarCursoDocenteView.php?guardado=false");
+        exit();
+    }
 }
