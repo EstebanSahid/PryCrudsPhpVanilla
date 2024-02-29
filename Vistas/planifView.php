@@ -1,9 +1,15 @@
 <?php
 include '../Conexion/conexion.php';
 
-$index = $pdo->prepare("SELECT * FROM empresa WHERE emp_estado = 1");
+$index = $pdo->prepare("SELECT p.*, c.cu_nombre FROM planificacion p
+                        INNER JOIN cursos c ON c.cu_id = p.cu_id
+                        WHERE p.plan_estado = 1");
 $index -> execute();
-$listaEmpresas = $index->fetchAll(PDO::FETCH_ASSOC);
+$ListaPlanificacion = $index->fetchAll(PDO::FETCH_ASSOC);
+
+$cursos = $pdo->prepare("SELECT * FROM cursos WHERE cu_estado = 1");
+$cursos -> execute();
+$listacursos = $cursos->fetchAll(PDO::FETCH_ASSOC);
 
 
 if(isset($_GET['guardado'])) {
@@ -47,7 +53,7 @@ if(isset($_GET['eliminado'])) {
                 </script>';
     }
 }
-//print_r($listaEmpresas);
+//print_r($ListaPlanificacion);
 ?>
 
 <!DOCTYPE html>
@@ -133,7 +139,7 @@ if(isset($_GET['eliminado'])) {
                 </div>
                 <div class="col-4 d-flex justify-content-end service_container">
                     <div class="d-flex justify-content-center contact_section">
-                        <button id="agregarEmpresaBtn">
+                        <button id="agregarplanifBtn">
                             Agregar Planificacion
                         </button>
                     </div>
@@ -144,36 +150,18 @@ if(isset($_GET['eliminado'])) {
                 <table id="example" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="text-center">Empresa</th>
-                            <th class="text-center">RUC</th>
-                            <th class="text-center">Telefono</th>
-                            <th class="text-center">Direccion</th>
-                            <th class="text-center">Acciones</th>
+                            <th class="text-center">Curso</th>
+                            <th class="text-center">Tema</th>
+                            <th class="text-center">Lugar</th>
+                            <th class="text-center">Comentarios</th>
                         </tr>
                     </thead>
-                    <?php foreach($listaEmpresas as $empresa){ ?>
+                    <?php foreach($ListaPlanificacion as $planif){ ?>
                         <tr>
-                            <td class="text-center"><?= $empresa['emp_nombre']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_RUC']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_telefono']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_direccion']; ?></td>
-                            <td> 
-                                <div class="d-flex justify-content-center align-middle contact_crud">
-                                    <button class="editarEmpresaBtn btn btn-primary mr-2"
-                                            data-id="<?= $empresa['emp_id'];?>"
-                                            data-nombre="<?= $empresa['emp_nombre'];?>"
-                                            data-ruc="<?= $empresa['emp_RUC'];?>"
-                                            data-telef="<?= $empresa['emp_telefono'];?>"
-                                            data-dir="<?= $empresa['emp_direccion'];?>">
-                                        Editar
-                                    </button>
-                                    <button class="eliminarEmpresaBtn btn btn-primary mr-2"
-                                            data-id="<?= $empresa['emp_id'];?>">
-                                        Eliminar
-                                    </button>
-                                </div>
-                            </td>
-                            
+                            <td class="text-center"><?= $planif['cu_nombre']; ?></td>
+                            <td class="text-center"><?= $planif['plan_tema']; ?></td>
+                            <td class="text-center"><?= $planif['plan_lugar']; ?></td>
+                            <td class="text-center"><?= (($planif['plan_comentarios'] == "") ? "-" : $planif['plan_comentarios'])  ?> </td>
                         </tr>
                     <?php } ?>
                 </table>
@@ -200,39 +188,51 @@ if(isset($_GET['eliminado'])) {
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Agregar Nueva Empresa</h5>
+                        <h5 class="modal-title">Agregar Nueva Planificacion</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
+                        <form action="../Controladores/planifController.php" method="post">
                             <div class="row">
-                                <input type="hidden" name="txt_id">
                                 <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
-                                        <label for="txt_nombre">Empresa</label>
+                                    <div class="form-floating">
+                                        <select class="form-select" id="floatingSelect" name="id_curso" aria-label="Floating label select example">
+                                            <?php foreach($listacursos as $curso){ ?>
+                                                <option value="<?= $curso["cu_id"]; ?>" selected>
+                                                    <?= $curso["cu_nombre"]; ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                        <label for="floatingSelect">Curso</label>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_RUC" placeholder="" id="txt_RUC" required>
-                                        <label for="txt_RUC">RUC</label>
+                                        <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
+                                        <label for="txt_nombre">Tema</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_telef" placeholder="" id="txt_telef" required>
-                                        <label for="txt_telef">Telefono</label>
-                                        
+                                        <input class="form-control" type="text" name="txt_lugar" placeholder="" id="txt_lugar" required>
+                                        <label for="txt_lugar">Sede</label>
                                     </div>
                                 </div>
                                 <div class="col-6">
+                                    <input type="checkbox" id="check_esExamen" name="check_esExamen" value="valor1">
+                                    <label for="check_esExamen">¿Es Exámen?</label>
                                     <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_dir" placeholder="" id="txt_dir" required><br> 
-                                        <label for="txt_dir">Dirección</label>
+                                        <input class="form-control" type="number" name="txt_numPreguntas" placeholder="" id="txt_numPreguntas" readonly>
+                                        <label for="txt_numPreguntas">N° Preguntas</label>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-floating">
+                                    <textarea class="form-control" name="txt_area_comentarios" placeholder="" id="floatingTextarea" cols="30" rows="10"></textarea>
+                                    <label for="floatingTextarea" class="ml-2">Comentarios:</label>
                                 </div>
                             </div>
                             <div class="row">
@@ -252,87 +252,6 @@ if(isset($_GET['eliminado'])) {
                 </div>
             </div>
         </div>
-
-        <!-- Modal Editar -->
-        <div class="modal" tabindex="-1" id="modalEdit">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Editar Empresa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
-                            <div class="row">
-                                <input type="hidden" name="txt_id" id="txt_id">
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
-                                        <label for="txt_nombre">Empresa</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_RUC" placeholder="" id="txt_RUC" required>
-                                        <label for="txt_RUC">RUC</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_telef" placeholder="" id="txt_telef" required>
-                                        <label for="txt_telef">Telefono</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_dir" placeholder="" id="txt_dir" required><br> 
-                                        <label for="txt_dir">Dirección</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                                    <button value="btnModificar" type="submit" name="accion" class="btn btn-primary">Editar</button>
-                                </div>
-                            </div>
-                            
-                            <!--
-                            <button value="btnModificar" type="submit" name="accion">Modificar</button>
-                            <button value="btnEliminar" type="submit" name="accion">Eliminar</button>
-                            <button value="btnCancelar" type="submit" name="accion">Cancelar</button>
-                            -->
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Eliminar -->
-        <div class="modal " tabindex="-1" id="modalDelete">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Eliminar Empresa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
-                            <input type="hidden" name="txt_id" id="txt_id">
-                            <p>¿Está Seguro de Eliminar el Registro?</p>
-                            <div class="row">
-                                <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                                    <button value="btnEliminar" type="submit" name="accion" class="btn btn-primary">Eliminar</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Modales -->
 
         <!-- Scripts -->
@@ -342,38 +261,20 @@ if(isset($_GET['eliminado'])) {
                 $('#example').DataTable();
 
                 //Abrir el Modal para Agregar
-                $('#agregarEmpresaBtn').click(function(){
+                $('#agregarplanifBtn').click(function(){
                     console.log("click aqui")
                     $('#modalAdd').modal('show');
                 });
 
-                //Abrir el Modal Para Editar
-                $('.editarEmpresaBtn').click(function(){
+                var checkbox = document.getElementById("check_esExamen");
+                var inputPreguntas = document.getElementById("txt_numPreguntas");
 
-                    // Obtener los datos del botón
-                    var idEmpresa = $(this).data('id');
-                    var nombreEmpresa = $(this).data('nombre');
-                    var rucEmpresa = $(this).data('ruc');
-                    var telefEmpresa = $(this).data('telef');
-                    var dirEmpresa = $(this).data('dir');
-                    console.log(idEmpresa);
-
-                    // Asignar los datos al formulario del modal
-                    $('#modalEdit #txt_id').val(idEmpresa);
-                    $('#modalEdit #txt_nombre').val(nombreEmpresa);
-                    $('#modalEdit #txt_RUC').val(rucEmpresa);
-                    $('#modalEdit #txt_telef').val(telefEmpresa);
-                    $('#modalEdit #txt_dir').val(dirEmpresa);
-
-                    //Activar el Modal
-                    $('#modalEdit').modal('show');
-                });
-
-                //Abrir el Modal Para Eliminar
-                $('.eliminarEmpresaBtn').click(function(){
-                    var idEmpresa = $(this).data('id');
-                    $('#modalDelete #txt_id').val(idEmpresa);
-                    $('#modalDelete').modal('show');
+                checkbox.addEventListener('change', function() {
+                    if (checkbox.checked) {
+                        inputPreguntas.removeAttribute("readonly");
+                    } else {
+                        inputPreguntas.setAttribute("readonly", "readonly");
+                    }
                 });
             });
         </script>

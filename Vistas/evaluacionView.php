@@ -1,12 +1,23 @@
 <?php
 include '../Conexion/conexion.php';
 
-$index = $pdo->prepare("SELECT * FROM empresa WHERE emp_estado = 1");
+$index = $pdo->prepare("SELECT 
+                        e.*,
+                        m.*,
+                        IF(e.ev_nota = null,0,e.ev_nota) as nota,
+                        CONCAT(es.est_primerApellido,' ', es.est_segundoApellido, ' ', es.est_primerNombre) as estudiante,
+                        es.*,
+                        c.cu_nombre
+                        FROM evaluacion e 
+                        INNER JOIN matricula m ON e.mat_id = m.mat_id
+                        INNER JOIN estudiante es ON es.est_id = m.est_id
+                        INNER JOIN cursoxdocente cxd ON cxd.cxd_id = m.cxd_id
+                        INNER JOIN cursos c ON c.cu_id = cxd.cu_id ");
 $index -> execute();
-$listaEmpresas = $index->fetchAll(PDO::FETCH_ASSOC);
+$listaEvaluaciones = $index->fetchAll(PDO::FETCH_ASSOC);
 
 
-if(isset($_GET['guardado'])) {
+/*if(isset($_GET['guardado'])) {
     if ($_GET['guardado'] == "true") {
         echo '  <script>
                     alert("La inserción fue exitosa.");
@@ -46,8 +57,8 @@ if(isset($_GET['eliminado'])) {
                     window.history.replaceState({}, document.title, window.location.pathname);
                 </script>';
     }
-}
-//print_r($listaEmpresas);
+}*/
+//print_r($listaEvaluaciones);
 ?>
 
 <!DOCTYPE html>
@@ -109,7 +120,7 @@ if(isset($_GET['eliminado'])) {
                 <div class="col-8"></div>
                 <div class="col-4 d-flex justify-content-end service_container">
                     <div class="d-flex justify-content-center contact_section">
-                        <button id="agregarEmpresaBtn">
+                        <button id="agregarevaluacionBtn">
                             Agregar Evaluacion
                         </button>
                     </div>
@@ -120,36 +131,35 @@ if(isset($_GET['eliminado'])) {
                 <table id="example" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="text-center">Empresa</th>
-                            <th class="text-center">RUC</th>
-                            <th class="text-center">Telefono</th>
-                            <th class="text-center">Direccion</th>
+                            <th class="text-center">Estudiante</th>
+                            <th class="text-center">Curso</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">Nota</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <?php foreach($listaEmpresas as $empresa){ ?>
+                    <?php foreach($listaEvaluaciones as $evaluacion){ ?>
                         <tr>
-                            <td class="text-center"><?= $empresa['emp_nombre']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_RUC']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_telefono']; ?></td>
-                            <td class="text-center"><?= $empresa['emp_direccion']; ?></td>
-                            <td> 
-                                <div class="d-flex justify-content-center align-middle contact_crud">
-                                    <button class="editarEmpresaBtn btn btn-primary mr-2"
-                                            data-id="<?= $empresa['emp_id'];?>"
-                                            data-nombre="<?= $empresa['emp_nombre'];?>"
-                                            data-ruc="<?= $empresa['emp_RUC'];?>"
-                                            data-telef="<?= $empresa['emp_telefono'];?>"
-                                            data-dir="<?= $empresa['emp_direccion'];?>">
-                                        Editar
+                            <td class="text-center"><?= $evaluacion['estudiante']; ?></td>
+                            <td class="text-center"><?= $evaluacion['cu_nombre']; ?></td>
+                            <td class="text-center"><?= (isset($evaluacion['ev_nota']) ? "Finalizado" : "Pendiente") ?></td>
+                            <td class="text-center"><?= (isset($evaluacion['ev_nota']) ? $evaluacion['ev_nota'] : "-") ?></td>
+                            <td class="align-middle"> 
+                                <div class="d-flex justify-content-center contact_crud">
+                                    <?php if(isset($evaluacion['ev_nota'])){ ?>
+                                        <button class="verEvaluacionBtn btn btn-primary mr-2"
+                                            data-id="<?= $evaluacion["ev_id"]; ?>"
+                                            >
+                                        Ver evaluación
                                     </button>
-                                    <button class="eliminarEmpresaBtn btn btn-primary mr-2"
-                                            data-id="<?= $empresa['emp_id'];?>">
-                                        Eliminar
+                                    <?php }else{ ?>
+                                        <button class="realizarEvaluacionBtn btn btn-primary mr-2"
+                                            data-id="<?= $evaluacion['ev_id'];?>">
+                                        Realizar
                                     </button>
+                                    <?php } ?>
                                 </div>
                             </td>
-                            
                         </tr>
                     <?php } ?>
                 </table>
@@ -176,17 +186,17 @@ if(isset($_GET['eliminado'])) {
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Agregar Nueva Empresa</h5>
+                        <h5 class="modal-title">Agregar Nueva evaluacion</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
+                        <form action="../Controladores/evaluacionController.php" method="post">
                             <div class="row">
                                 <input type="hidden" name="txt_id">
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
-                                        <label for="txt_nombre">Empresa</label>
+                                        <label for="txt_nombre">evaluacion</label>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -223,76 +233,37 @@ if(isset($_GET['eliminado'])) {
             </div>
         </div>
 
-        <!-- Modal Editar -->
-        <div class="modal" tabindex="-1" id="modalEdit">
-            <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal Visualizar -->
+        <div class="modal" tabindex="-1" id="modalVisualizar">
+            <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Editar Empresa</h5>
+                        <h5 class="modal-title">Evaluación</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
-                            <div class="row">
-                                <input type="hidden" name="txt_id" id="txt_id">
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
-                                        <label for="txt_nombre">Empresa</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_RUC" placeholder="" id="txt_RUC" required>
-                                        <label for="txt_RUC">RUC</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_telef" placeholder="" id="txt_telef" required>
-                                        <label for="txt_telef">Telefono</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_dir" placeholder="" id="txt_dir" required><br> 
-                                        <label for="txt_dir">Dirección</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                                    <button value="btnModificar" type="submit" name="accion" class="btn btn-primary">Editar</button>
-                                </div>
-                            </div>
-                        </form>
+                        <section id="modal_visualizar_evaluacion"></section>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal Eliminar -->
-        <div class="modal " tabindex="-1" id="modalDelete">
-            <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal Realizar Evaluacion -->
+        <div class="modal" tabindex="-1" id="modalrealizar">
+            <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Eliminar Empresa</h5>
+                        <h5 class="modal-title">Realizar Evaluación</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="../Controladores/empresaController.php" method="post">
-                            <input type="hidden" name="txt_id" id="txt_id">
-                            <p>¿Está Seguro de Eliminar el Registro?</p>
-                            <div class="row">
-                                <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                                    <button value="btnEliminar" type="submit" name="accion" class="btn btn-primary">Eliminar</button>
-                                </div>
-                            </div>
-                        </form>
+                        <section id="modal_realizar_evaluacion"></section>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -306,38 +277,21 @@ if(isset($_GET['eliminado'])) {
                 $('#example').DataTable();
 
                 //Abrir el Modal para Agregar
-                $('#agregarEmpresaBtn').click(function(){
+                $('#agregarevaluacionBtn').click(function(){
                     console.log("click aqui")
                     $('#modalAdd').modal('show');
                 });
 
-                //Abrir el Modal Para Editar
-                $('.editarEmpresaBtn').click(function(){
-
-                    // Obtener los datos del botón
-                    var idEmpresa = $(this).data('id');
-                    var nombreEmpresa = $(this).data('nombre');
-                    var rucEmpresa = $(this).data('ruc');
-                    var telefEmpresa = $(this).data('telef');
-                    var dirEmpresa = $(this).data('dir');
-                    console.log(idEmpresa);
-
-                    // Asignar los datos al formulario del modal
-                    $('#modalEdit #txt_id').val(idEmpresa);
-                    $('#modalEdit #txt_nombre').val(nombreEmpresa);
-                    $('#modalEdit #txt_RUC').val(rucEmpresa);
-                    $('#modalEdit #txt_telef').val(telefEmpresa);
-                    $('#modalEdit #txt_dir').val(dirEmpresa);
-
-                    //Activar el Modal
-                    $('#modalEdit').modal('show');
+                //Abrir Visualizar
+                $('.verEvaluacionBtn').click(function(){
+                    console.log("clic")
+                    $('#modalVisualizar').modal('show');
                 });
 
-                //Abrir el Modal Para Eliminar
-                $('.eliminarEmpresaBtn').click(function(){
-                    var idEmpresa = $(this).data('id');
-                    $('#modalDelete #txt_id').val(idEmpresa);
-                    $('#modalDelete').modal('show');
+                //Abrir Realizar
+                $('.realizarEvaluacionBtn').click(function(){
+                    console.log("clic")
+                    $('#modalrealizar').modal('show');
                 });
             });
         </script>
