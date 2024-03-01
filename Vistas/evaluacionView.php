@@ -6,13 +6,15 @@ $index = $pdo->prepare("SELECT
                         m.*,
                         IF(e.ev_nota = null,0,e.ev_nota) as nota,
                         CONCAT(es.est_primerApellido,' ', es.est_segundoApellido, ' ', es.est_primerNombre) as estudiante,
+                        CONCAT(d.doc_primerApellido,' ', d.doc_segundoApellido, ' ', d.doc_primerNombre) as docente,
                         es.*,
-                        c.cu_nombre
+                        c.*
                         FROM evaluacion e 
                         INNER JOIN matricula m ON e.mat_id = m.mat_id
                         INNER JOIN estudiante es ON es.est_id = m.est_id
                         INNER JOIN cursoxdocente cxd ON cxd.cxd_id = m.cxd_id
-                        INNER JOIN cursos c ON c.cu_id = cxd.cu_id ");
+                        INNER JOIN cursos c ON c.cu_id = cxd.cu_id
+                        INNER JOIN docente d ON d.doc_id = cxd.doc_id");
 $index -> execute();
 $listaEvaluaciones = $index->fetchAll(PDO::FETCH_ASSOC);
 
@@ -116,6 +118,7 @@ if(isset($_GET['eliminado'])) {
                     </h3>
                 </div>
             </div>
+            <!--
             <div class="row">
                 <div class="col-8"></div>
                 <div class="col-4 d-flex justify-content-end service_container">
@@ -125,7 +128,7 @@ if(isset($_GET['eliminado'])) {
                         </button>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
             <div class="row pt-4">
                 <table id="example" class="table table-striped" style="width:100%">
@@ -149,12 +152,22 @@ if(isset($_GET['eliminado'])) {
                                     <?php if(isset($evaluacion['ev_nota'])){ ?>
                                         <button class="verEvaluacionBtn btn btn-primary mr-2"
                                             data-id="<?= $evaluacion["ev_id"]; ?>"
+                                            data-curso="<?= $evaluacion["cu_nombre"]; ?>"
+                                            data-nota="<?= $evaluacion["ev_nota"]; ?>"
+                                            data-alumno="<?= $evaluacion["estudiante"]; ?>"
+                                            data-docente="<?= $evaluacion["docente"]; ?>"
                                             >
                                         Ver evaluación
                                     </button>
                                     <?php }else{ ?>
                                         <button class="realizarEvaluacionBtn btn btn-primary mr-2"
-                                            data-id="<?= $evaluacion['ev_id'];?>">
+                                            data-id="<?= $evaluacion["ev_id"]; ?>"
+                                            data-curso="<?= $evaluacion["cu_nombre"]; ?>"
+                                            data-nota="<?= $evaluacion["ev_nota"]; ?>"
+                                            data-alumno="<?= $evaluacion["estudiante"]; ?>"
+                                            data-docente="<?= $evaluacion["docente"]; ?>"
+                                            data-idcurso="<?= $evaluacion["cu_id"]; ?>"
+                                            >
                                         Realizar
                                     </button>
                                     <?php } ?>
@@ -181,67 +194,32 @@ if(isset($_GET['eliminado'])) {
 
         <!-- Modales -->
 
-        <!-- Modal Agregar -->
-        <div class="modal" tabindex="-1" id="modalAdd">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Agregar Nueva evaluacion</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="../Controladores/evaluacionController.php" method="post">
-                            <div class="row">
-                                <input type="hidden" name="txt_id">
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="txt_nombre" placeholder="" name="txt_nombre" required>
-                                        <label for="txt_nombre">evaluacion</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_RUC" placeholder="" id="txt_RUC" required>
-                                        <label for="txt_RUC">RUC</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="number" name="txt_telef" placeholder="" id="txt_telef" required>
-                                        <label for="txt_telef">Telefono</label>
-                                        
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input class="form-control" type="text" name="txt_dir" placeholder="" id="txt_dir" required><br> 
-                                        <label for="txt_dir">Dirección</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                                    <button value="btnAgregar" type="submit" name="accion" class="btn btn-primary">Agregar</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Modal Visualizar -->
         <div class="modal" tabindex="-1" id="modalVisualizar">
             <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Evaluación</h5>
+                        <h5 class="modal-title">Ver Respuestas</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <b>Estudiante:</b> <br><label id="txt_estudiante"></label>.
+                            </div>
+                            <div class="col-6">
+                                <b>Materia:</b> <br><label id="txt_curso"></label>.
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <b>Docente:</b> <br><label id="txt_docente"></label>.
+                            </div>
+                            <div class="col-6">
+                                <b>Calificación:</b> <br><label id="txt_calificación"></label>/10
+                            </div>
+                        </div>
+                        <hr>
                         <section id="modal_visualizar_evaluacion"></section>
                     </div>
                     <div class="modal-footer">
@@ -259,12 +237,27 @@ if(isset($_GET['eliminado'])) {
                         <h5 class="modal-title">Realizar Evaluación</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <section id="modal_realizar_evaluacion"></section>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cerrar</button>
-                    </div>
+                    
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <b>Estudiante:</b> <br><label id="txt_estudiante"></label>.
+                                </div>
+                                <div class="col-6">
+                                    <b>Materia:</b> <br><label id="txt_curso"></label>.
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <b>Docente:</b> <br><label id="txt_docente"></label>.
+                                </div>
+                                <div class="col-6">
+                                    <b>Calificación:</b> <br><label id="txt_calificación"></label>/10
+                                </div>
+                            </div>
+                            <hr>
+                            <section id="modal_realizar_evaluacion"></section>
+                        </div>
                 </div>
             </div>
         </div>
@@ -273,6 +266,12 @@ if(isset($_GET['eliminado'])) {
         <!-- Scripts -->
         <script>
             $(document).ready(function() {
+
+                $('#modalrealizar').on('hidden.bs.modal', function() {
+                    console.log("Se cerro el modal");
+                    $('#modal_cerrado').val('cerrado');
+                    $('#form_evaluacion').submit();
+                });
                 // Inicializar DataTable
                 $('#example').DataTable();
 
@@ -284,15 +283,63 @@ if(isset($_GET['eliminado'])) {
 
                 //Abrir Visualizar
                 $('.verEvaluacionBtn').click(function(){
-                    console.log("clic")
-                    $('#modalVisualizar').modal('show');
+                    var id_evaluacion = $(this).data('id');
+                    var curso = $(this).data('curso');
+                    var nota = $(this).data('nota');
+                    var alumno = $(this).data('alumno');
+                    var docente = $(this).data('docente');
+                    traerRespuestasVisualizar(id_evaluacion, curso, nota, alumno, docente);
                 });
 
+                function traerRespuestasVisualizar(id_evaluacion, curso, nota, alumno, docente){
+                    $.ajax({
+                        data: {
+                            id_evaluacion: id_evaluacion,
+                        },
+                        url: "../Controladores/evaluacionController.php?exec=traerRespuesta",
+                        type: "POST",
+                        success: function (r) {
+                            $('#modalVisualizar #txt_calificación').text(nota);
+                            $('#modalVisualizar #txt_estudiante').text(alumno);
+                            $('#modalVisualizar #txt_curso').text(curso);
+                            $('#modalVisualizar #txt_docente').text(docente);
+                            $('#modalVisualizar').modal('show');
+                            $("#modal_visualizar_evaluacion").html(r);
+                        },
+                    });
+                }
                 //Abrir Realizar
                 $('.realizarEvaluacionBtn').click(function(){
-                    console.log("clic")
-                    $('#modalrealizar').modal('show');
+                    var id_evaluacion = $(this).data('id');
+                    var curso = $(this).data('curso');
+                    var nota = $(this).data('nota');
+                    var alumno = $(this).data('alumno');
+                    var docente = $(this).data('docente');
+                    var id_curso = $(this).data('idcurso');
+                    realizarEvaluacion(id_evaluacion, curso, nota, alumno, docente, id_curso);
                 });
+
+                function realizarEvaluacion(id_evaluacion, curso, nota, alumno, docente, id_curso){
+                    console.log("id desde funcion");
+                    console.log(id_evaluacion);
+                    $.ajax({
+                        data: {
+                            id_evaluacion: id_evaluacion,
+                            id_curso: id_curso
+                        },
+                        url: "../Controladores/evaluacionController.php?exec=traerEvaluacion",
+                        type: "POST",
+                        success: function (r) {
+                            $('#modalrealizar #txt_id_evaluacion').val(id_evaluacion);
+                            $('#modalrealizar #txt_calificación').text(nota);
+                            $('#modalrealizar #txt_estudiante').text(alumno);
+                            $('#modalrealizar #txt_curso').text(curso);
+                            $('#modalrealizar #txt_docente').text(docente);
+                            $('#modalrealizar').modal('show');
+                            $("#modal_realizar_evaluacion").html(r);
+                        },
+                    });
+                }
             });
         </script>
         <!-- Scripts -->

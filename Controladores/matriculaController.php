@@ -86,14 +86,28 @@ switch($accion){
             $insert->bindParam(':val2', $id_alumno);
 
             if ($insert->execute()) {
-                header("Location: ../Vistas/matriculaView.php?guardado=true");
-                exit();
+                $ultimo_id_insertado = $pdo->lastInsertId();
+
+                $inserMatricula = $pdo->prepare("INSERT INTO evaluacion 
+                                                    (ev_notaMaxima, ev_fechaEvaluacion, mat_id)
+                                                VALUES 
+                                                    (10, NOW(), :val1)");
+                
+                $inserMatricula->bindParam(':val1', $ultimo_id_insertado);
+                if($inserMatricula->execute()){
+                    header("Location: ../Vistas/matriculaView.php?guardado=true");
+                    exit();
+                }else{
+                    header("Location: ../Vistas/matriculaView.php?guardado=false");
+                    exit();
+                }
             } else {
                 header("Location: ../Vistas/matriculaView.php?guardado=false");
                 exit();
             }
         }else{
             header("Location: ../Vistas/matriculaView.php?guardado=incompleto");
+            exit();
         }
         break;
 }
