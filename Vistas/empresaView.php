@@ -316,7 +316,10 @@ if(isset($_GET['eliminado'])) {
         <script>
             $(document).ready(function() {
                 // Inicializar DataTable
-                $('#example').DataTable();
+                $("#example").DataTable({
+    dom: "lftip",
+    buttons: ["excel", "pdf", "print", "colvis"],
+  });
 
                 //Abrir el Modal para Agregar
                 $('#agregarEmpresaBtn').click(function(){

@@ -1,20 +1,27 @@
 <?php
 include '../Conexion/conexion.php';
 
-$formularioCerrado = $_POST['modal_cerrado'] == "" ? true : false ;
-$accion = (isset($_POST['accion'])) ? $_POST['accion'] : "";
 
-echo $formularioCerrado;
+$accion = (isset($_POST['accion'])) ? $_POST['accion'] : "";
+/*$listo = "";
+if(isset($_POST['modal_cerrado'])){
+    $listo = "h";
+}
+
+$formularioCerrado = ($listo == "" ? true : false);
+
+
+//echo $formularioCerrado;
 
 if(!$formularioCerrado){
     $numPreguntas = 0;
     $idevaluacion = $_POST['txt_id_evaluacion'];
     foreach ($_POST['pregunta'] as $indice => $valor) {
-        //guardarCerradoModal($indice, $idevaluacion);
+        guardarCerradoModal($indice, $idevaluacion);
     }
     header("Location: ../Vistas/evaluacionView.php");
     exit();
-}
+}*/
 
 function guardarCerradoModal($id_pregunta, $id_evaluacion){
     global $pdo;
@@ -172,17 +179,123 @@ function traerRespuestas($id_pregunta){
 
 switch($accion){
     case "btnAgregar":
-        var_dump($_POST);
-        $arrayPreguntas = [];
-        foreach ($_POST['pregunta'] as $indice => $valor) {
-            echo $indice . "<br>";
-        }
+        //var_dump($_POST);
+        compararDatos($_POST['respuesta'], $_POST['pregunta'], $_POST['txt_id_evaluacion']);
         break;
     case "btnAgregarDocente":
         //guardar($_POST['txt_idti'], $_POST['txt_id']);
         break;
 }
 
-function calcularNota(){
+function compararDatos($respuestas, $preguntas, $id_evaluacion){
+    $resp_evaluacion = [];
+    $preg = array_keys($preguntas);
 
+    $respuestasCorrectas = [];
+    foreach($preguntas as $p => $valor){
+        $id_respuesta = traerEsCorrecto($p);
+        if ($id_respuesta !== null) {
+            $respuestasCorrectas[] = $id_respuesta;
+        }
+    }
+
+    //var_dump($respuestasCorrectas);
+
+    foreach ($preg as $id_pregunta) { 
+        if (array_key_exists($id_pregunta, $respuestas)) {
+            $respuesta = $respuestas[$id_pregunta];
+        } else {
+            $respuesta = 0;
+        }
+
+        $resp_evaluacion[] = [
+            'id_pregunta' => $id_pregunta,
+            'id_respuesta' => $respuesta
+        ];
+    }
+
+    $respFinal = [];
+    foreach($respuestasCorrectas as $res){
+        $encontrado = false; // Bandera para verificar si se encuentra el ID de la respuesta
+        foreach($respuestas as $respu){
+            if($res == $respu){ // Compara el ID de la respuesta correcta con el ID de la respuesta
+                $encontrado = true;
+                break; 
+            }
+        }
+        if($encontrado){
+            array_push($respFinal, 1);
+        }else{
+            array_push($respFinal, 0);
+        }
+    }
+
+
+    for ($i = 0; $i < count($resp_evaluacion); $i++) {
+        if (isset($respFinal[$i])) {
+            $resp_evaluacion[$i]['esCorrecto'] = $respFinal[$i];
+        } else {
+            $resp_evaluacion[$i]['esCorrecto'] = 0;
+        }
+    }
+
+    //var_dump("hola");
+    $contadorCorrectos = [];
+    foreach($resp_evaluacion as $res){
+        if($res['esCorrecto'] == 1){
+            array_push($contadorCorrectos, 1);
+        }
+    }
+
+    $asiertos = count($contadorCorrectos);
+    $numPreguntasEval = count($preguntas);
+
+    /*var_dump($asiertos);
+    var_dump($numPreguntasEval);*/
+
+    calcularNota($asiertos, $numPreguntasEval, $id_evaluacion);
+
+    foreach($resp_evaluacion as $res){
+        guardarEvaluacionDetalle($res['id_pregunta'], $res['id_respuesta'], $res['esCorrecto'] , $id_evaluacion);
+    }
+
+    header("Location: ../Vistas/evaluacionView.php");
+    exit();
+}
+
+function traerEsCorrecto($id_pregunta){
+    global $pdo;
+    $select = $pdo->prepare("SELECT * FROM respuestas WHERE pre_id = :val1 AND res_esCorrecto = 1");
+    $select->bindParam(':val1', $id_pregunta);
+    $select->execute();
+    $esCorrecto = $select->fetch(PDO::FETCH_ASSOC); // Usar fetch en lugar de fetchAll
+    if ($esCorrecto) {
+        $id_respuesta = $esCorrecto['res_id'];
+        return $id_respuesta;
+    } else {
+        return null; // O retorna lo que necesites en caso de no encontrar un resultado
+    }
+}
+
+function guardarEvaluacionDetalle($id_pregunta, $id_respuesta, $esCorrecto, $id_evaluacion){
+    global $pdo;
+    $insert = $pdo->prepare("INSERT INTO evaluaciondetalle (evd_esCorrecto, ev_id, pre_id, res_id)
+                                VALUES (:val1, :val2, :val3, :val4)");
+    $insert->bindParam(':val1', $esCorrecto);
+    $insert->bindParam(':val2', $id_evaluacion);
+    $insert->bindParam(':val3', $id_pregunta);
+    $insert->bindParam(':val4', $id_respuesta);
+    $insert->execute();
+}
+
+function calcularNota($asiertos, $numPreguntasEval, $id_evaluacion){
+    global $pdo;
+    $nota = ($asiertos*10)/$numPreguntasEval;
+    var_dump($nota);
+    $update = $pdo->prepare("UPDATE evaluacion 
+                                SET ev_nota = :val1
+                            WHERE ev_id = :val2");
+    $update->bindParam(':val1', $nota);
+    $update->bindParam(':val2', $id_evaluacion);
+    $update->execute();
 }
