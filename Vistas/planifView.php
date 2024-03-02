@@ -128,6 +128,9 @@ if(isset($_GET['eliminado'])) {
                                     <li>
                                         <a class="dropdown-item" href="./matriculaView.php">Matricula Alumno</a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item" href="./preguntasRespuestasView.php">Banco de Preguntas</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

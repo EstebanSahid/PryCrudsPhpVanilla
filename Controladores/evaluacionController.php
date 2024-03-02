@@ -1,13 +1,16 @@
 <?php
 include '../Conexion/conexion.php';
 
-$formularioCerrado = (isset($_POST['modal_cerrado']) ? true : false );
+$formularioCerrado = $_POST['modal_cerrado'] == "" ? true : false ;
+$accion = (isset($_POST['accion'])) ? $_POST['accion'] : "";
 
-if($formularioCerrado){
+echo $formularioCerrado;
+
+if(!$formularioCerrado){
     $numPreguntas = 0;
     $idevaluacion = $_POST['txt_id_evaluacion'];
     foreach ($_POST['pregunta'] as $indice => $valor) {
-        guardarCerradoModal($indice, $idevaluacion);
+        //guardarCerradoModal($indice, $idevaluacion);
     }
     header("Location: ../Vistas/evaluacionView.php");
     exit();
@@ -34,11 +37,6 @@ function updateCalifCerradoModal($id_evaluacion){
                             WHERE ev_id = :val1");
     $update->bindParam(':val1', $id_evaluacion);
     $update->execute();
-}
-
-
-function calcularNota(){
-
 }
 
 if (isset($_GET["exec"]) and $_GET["exec"] == "traerRespuesta") {
@@ -119,12 +117,16 @@ if (isset($_GET["exec"]) and $_GET["exec"] == "traerEvaluacion") {
                 <button value="btnAgregar" type="submit" name="accion" class="btn btn-primary">Finalizar</button>
             </div>
         </div>
-        
     </form>
     <?php
     }else{
         ?> 
         <p class="text-center">No hay Preguntas Para este Curso,<br> Por favor Ingrese al sistema</p>
+        <div class="d-flex justify-content-center">
+            <a href="../Vistas/preguntasRespuestasView.php">
+                <button type="button" class="btn btn-primary">Registrar Preguntas</button>
+            </a> 
+        </div>
         <?php
     }
 }
@@ -168,13 +170,19 @@ function traerRespuestas($id_pregunta){
     return $respuestas->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$accion = (isset($_POST['accion'])) ? $_POST['accion'] : "";
-
 switch($accion){
     case "btnAgregar":
-        //var_dump($_POST);
+        var_dump($_POST);
+        $arrayPreguntas = [];
+        foreach ($_POST['pregunta'] as $indice => $valor) {
+            echo $indice . "<br>";
+        }
         break;
     case "btnAgregarDocente":
-        guardar($_POST['txt_idti'], $_POST['txt_id']);
+        //guardar($_POST['txt_idti'], $_POST['txt_id']);
         break;
+}
+
+function calcularNota(){
+
 }

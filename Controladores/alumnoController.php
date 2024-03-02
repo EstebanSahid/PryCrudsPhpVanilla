@@ -48,6 +48,7 @@ switch($accion){
         $pass2 = (isset($_POST['txt_password'])) ? $_POST['txt_password'] : "";
 
         if ($pass1 == $pass2) {
+            $passSha = md5($pass1);
             $update = $pdo->prepare("UPDATE estudiante SET
                                 est_primerNombre = :val1, 
                                 est_segundoNombre = :val2, 

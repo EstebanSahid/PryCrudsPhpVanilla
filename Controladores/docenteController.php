@@ -49,7 +49,11 @@ switch($accion){
         $pass1 = (isset($_POST['txt_password1'])) ? $_POST['txt_password1'] : "";
         $pass2 = (isset($_POST['txt_password'])) ? $_POST['txt_password'] : "";
 
+        echo $pass1 . " " . $pass2;
+
         if ($pass1 == $pass2) {
+            $passSha = md5($pass1);
+            //echo "son iguales entra aqui " . $passSha;
             $update = $pdo->prepare("UPDATE docente SET
                                 doc_primerNombre = :val1, 
                                 doc_segundoNombre = :val2, 
@@ -77,7 +81,7 @@ switch($accion){
             if (!empty($_POST['txt_password'])) {
                 $update->bindParam(':val8', $passSha);
             }
-
+            
             if ($update->execute()) {
                 header("Location: ../Vistas/docenteView.php?editado=true");
                 exit();

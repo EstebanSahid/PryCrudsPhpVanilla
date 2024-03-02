@@ -151,7 +151,7 @@ if(isset($_GET['eliminado'])) {
                         <tr>
                             <td class="text-center align-middle"><?= $Docente['docente']; ?></td>
                             <td class="text-center align-middle"><?= $Docente['ti_texto']; ?></td>
-                            <td class="text-center align-middle"><?= isset($Docente['doc_numIdentificacion']) ? $Docente['doc_numIdentificacion'] : "-"; ?></td>
+                            <td class="text-center align-middle"><?= $Docente['doc_numIdentificacion'];?></td>
                             <td class="text-center align-middle"><?= $Docente['doc_correo']; ?></td>
                             <td class="text-center align-middle"><?= $Docente['doc_direccion']; ?></td>
                             <td class="text-center align-middle"><?= $Docente['doc_telefono']; ?></td>
@@ -166,7 +166,7 @@ if(isset($_GET['eliminado'])) {
                                             data-papellido="<?= $Docente['doc_primerApellido'];?>"
                                             data-sapellido="<?= $Docente['doc_segundoApellido'];?>"
                                             data-correo="<?= $Docente['doc_correo']; ?>"
-                                            data-ruc="<?= isset($Docente['doc_numIdentificación']) ? $Docente['doc_numIdentificación'] : "" ;?>"
+                                            data-ruc="<?= $Docente['doc_numIdentificacion'];?>"
                                             data-telef="<?= $Docente['doc_telefono'];?>"
                                             data-dir="<?= $Docente['doc_direccion'];?>"
                                             >

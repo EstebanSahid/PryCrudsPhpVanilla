@@ -18,7 +18,6 @@ $index = $pdo->prepare("SELECT
 $index -> execute();
 $listaEvaluaciones = $index->fetchAll(PDO::FETCH_ASSOC);
 
-
 /*if(isset($_GET['guardado'])) {
     if ($_GET['guardado'] == "true") {
         echo '  <script>
@@ -256,7 +255,9 @@ if(isset($_GET['eliminado'])) {
                                 </div>
                             </div>
                             <hr>
-                            <section id="modal_realizar_evaluacion"></section>
+                            
+                                <section id="modal_realizar_evaluacion"></section>
+                                
                         </div>
                 </div>
             </div>
